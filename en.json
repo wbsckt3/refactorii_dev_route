@@ -1,0 +1,103 @@
+{
+  "titulo_nodo1": "Web Infrastructure",
+  "titulo_nodo2": "MongoDB Database",
+  "titulo_nodo3": "Backend API + DB",
+  "titulo_nodo4": "AI-Powered Frontend",
+  "titulo_nodo5": "Advanced AI Agent",
+
+  "contenido_ruta1": "Web infrastructure: 6 hours = $420.000",
+  "contenido_ruta2": "MongoDB database: 2 hours = $140.000",
+  "contenido_ruta3": "Backend API and MongoDB business logic development: 10 hours = $700.000",
+  "contenido_ruta4": "AI prompting in Vercel for FRONTEND with vibe coding model: 5 hours = $350.000",
+  "contenido_ruta5": "AI agent development for web application: 6 hours = $420.000",
+
+  "descripcion_ruta1": "Complete CentOS server setup, domain, HTTPS certificates, Nginx and Node.js configuration",
+  "descripcion_ruta2": "MongoDB Atlas implementation as cloud database service",
+  "descripcion_ruta3": "Complete REST API development with authentication, models and multitenant endpoints",
+  "descripcion_ruta4": "React/TypeScript frontend creation using AI tools like Vercel V0",
+  "descripcion_ruta5": "Custom AI agents integration with OpenAI/DeepSeek and GitHub Actions",
+
+  "herramientas_ruta1": [
+    "CentOS HostDime Server",
+    "Domain www registration and config",
+    "WinSCP FTP client",
+    "PuTTY SSH client",
+    "Configure CentOS 7",
+    "HTTPS certificate with Let's Encrypt",
+    "Configure Nginx web server",
+    "Configure Node.js application server",
+    "NPM packages",
+    "Web Reverse Proxy"
+  ],
+
+  "herramientas_ruta2": [
+    "MongoDB Atlas DBAAS",
+    "Cluster configuration",
+    "NoSQL data models",
+    "Secure connection",
+    "Automatic backup"
+  ],
+
+  "herramientas_ruta3": [
+    "Create Node Express server (server.js)",
+    "Define DB entities",
+    "Create API boilerplate (ChatGPT prompt)",
+    "Create Google SignIn Auth model",
+    "Create DB models for API",
+    "Create tenant and company roles",
+    "Multitenant routes",
+    "Create endpoint controllers",
+    "Test endpoints with POSTMAN"
+  ],
+
+  "herramientas_ruta4": [
+    "AI Tool: Vercel V0.dev",
+    "Prompting to generate React + TypeScript frontend",
+    "Backend endpoint consumption modeling",
+    "Localhost deployment with npm install + npm run dev",
+    "Production build creation /dist"
+  ],
+
+  "herramientas_ruta5": [
+    "GitHub Pipelines tool introduction",
+    "server.js endpoint integration development with GitHub",
+    "Custom AI agent prompting",
+    "AI response modeling for business",
+    "Workflow development: AI integration to server and DB",
+    "AI agent functionality frontend - Vibe coding with Vercel"
+  ],
+
+  "estado_ruta1": "FREE",
+  "estado_ruta2": "PREMIUM",
+  "estado_ruta3": "PREMIUM",
+  "estado_ruta4": "PREMIUM",
+  "estado_ruta5": "PREMIUM",
+
+  "precio_ruta1": "Free",
+  "precio_ruta2": "$140.000",
+  "precio_ruta3": "$700.000",
+  "precio_ruta4": "$350.000",
+  "precio_ruta5": "$420.000",
+
+  "duracion_ruta1": "6 hours",
+  "duracion_ruta2": "2 hours",
+  "duracion_ruta3": "10 hours",
+  "duracion_ruta4": "5 hours",
+  "duracion_ruta5": "6 hours",
+
+  "campo1": "Name",
+  "campo2": "Email",
+  "campo3": "Selected Route",
+  "campo4": "Progress",
+
+  "boton1": "Start Learning Path",
+  "boton2": "View Resources",
+  "boton3": "Unlock Route",
+
+  "mensaje1": "Your learning path has been successfully started...",
+  "mensaje2": "Resources and materials will be available in your dashboard",
+  "mensaje3": "Please select a learning path",
+  "mensaje4": "This route requires premium subscription.",
+  "mensaje5": "Your learning resources are ready!",
+  "mensaje6": "Select the learning path you want to start"
+}

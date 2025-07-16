@@ -1,0 +1,103 @@
+{
+  "titulo_nodo1": "Infraestructura Web",
+  "titulo_nodo2": "Base de Datos MongoDB",
+  "titulo_nodo3": "API Backend + BD",
+  "titulo_nodo4": "Frontend con IA",
+  "titulo_nodo5": "Agente IA Avanzado",
+
+  "contenido_ruta1": "Infraestructura web: 6 horas = $420.000",
+  "contenido_ruta2": "Base de datos MongoDB: 2 horas = $140.000",
+  "contenido_ruta3": "Desarrollo de lógica de negocio en API BACK y BD Mongo: 10 horas = $700.000",
+  "contenido_ruta4": "IA prompting en Vercel para FRONT con modelo de vibe coding: 5 horas = $350.000",
+  "contenido_ruta5": "Desarrollo de agente IA para aplicación web: 6 horas = $420.000",
+
+  "descripcion_ruta1": "Configuración completa de servidor CentOS, dominio, certificados HTTPS, Nginx y Node.js",
+  "descripcion_ruta2": "Implementación de MongoDB Atlas como servicio de base de datos en la nube",
+  "descripcion_ruta3": "Desarrollo completo de API REST con autenticación, modelos y endpoints multitenant",
+  "descripcion_ruta4": "Creación de frontend React/TypeScript usando herramientas de IA como Vercel V0",
+  "descripcion_ruta5": "Integración de agentes IA personalizados con OpenAI/DeepSeek y GitHub Actions",
+
+  "herramientas_ruta1": [
+    "Server CentOS HostDime",
+    "Dominio www registro y config",
+    "WinSCP cliente FTP",
+    "PuTTY SSH cliente",
+    "Configurar CentOS 7",
+    "Certificado HTTPS con Let's Encrypt",
+    "Configurar servidor web Nginx",
+    "Configurar servidor de aplicaciones Node.js",
+    "NPM packages",
+    "Reverse Proxy web"
+  ],
+
+  "herramientas_ruta2": [
+    "Atlas MongoDB DBAAS",
+    "Configuración de clusters",
+    "Modelos de datos NoSQL",
+    "Conexión segura",
+    "Backup automático"
+  ],
+
+  "herramientas_ruta3": [
+    "Crear servidor Node Express (server.js)",
+    "Definir entidades BD",
+    "Crear boilerplate API (ChatGPT prompt)",
+    "Crear modelo de Auth Google SignIn",
+    "Crear modelos DB para el API",
+    "Crear tenant y roles companies",
+    "Multitenant routes",
+    "Crear endpoints controllers",
+    "Testear endpoints con POSTMAN"
+  ],
+
+  "herramientas_ruta4": [
+    "Herramienta IA: Vercel V0.dev",
+    "Prompting para generar frontend React + TypeScript",
+    "Modelado de consumo de endpoints backend",
+    "Despliegue en localhost con npm install + npm run dev",
+    "Creación del build para producción /dist"
+  ],
+
+  "herramientas_ruta5": [
+    "Introducción herramienta GitHub Pipelines",
+    "Desarrollo de integración endpoint server.js con GitHub",
+    "Prompting para agentes de IA a la medida",
+    "Modelado de respuesta de IA al negocio",
+    "Desarrollo de flujo de trabajo: integración IA a servidor y BD",
+    "Frontend para funcionalidad de agente IA - Vibe coding con Vercel"
+  ],
+
+  "estado_ruta1": "GRATIS",
+  "estado_ruta2": "PREMIUM",
+  "estado_ruta3": "PREMIUM",
+  "estado_ruta4": "PREMIUM",
+  "estado_ruta5": "PREMIUM",
+
+  "precio_ruta1": "Gratis",
+  "precio_ruta2": "$140.000",
+  "precio_ruta3": "$700.000",
+  "precio_ruta4": "$350.000",
+  "precio_ruta5": "$420.000",
+
+  "duracion_ruta1": "6 horas",
+  "duracion_ruta2": "2 horas",
+  "duracion_ruta3": "10 horas",
+  "duracion_ruta4": "5 horas",
+  "duracion_ruta5": "6 horas",
+
+  "campo1": "Nombre",
+  "campo2": "Email",
+  "campo3": "Ruta Seleccionada",
+  "campo4": "Progreso",
+
+  "boton1": "Iniciar Ruta de Aprendizaje",
+  "boton2": "Ver Recursos",
+  "boton3": "Desbloquear Ruta",
+
+  "mensaje1": "Tu ruta de aprendizaje se ha iniciado exitosamente...",
+  "mensaje2": "Los recursos y materiales estarán disponibles en tu dashboard",
+  "mensaje3": "Por favor selecciona una ruta de aprendizaje",
+  "mensaje4": "Esta ruta requiere suscripción premium.",
+  "mensaje5": "¡Tus recursos de aprendizaje están listos!",
+  "mensaje6": "Selecciona la ruta de aprendizaje que deseas comenzar"
+}
