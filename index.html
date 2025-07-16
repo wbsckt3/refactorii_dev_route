@@ -42,6 +42,7 @@
     width: auto;
     font-family: "Segoe UI", sans-serif;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer; /* Make the entire node clickable */
   }
 
   .drawflow .drawflow-node .title-box {
@@ -57,9 +58,13 @@
   }
   
   .drawflow .drawflow-node .title-box i {
-    margin-right: 10px;
+    margin-right: 10px; /* Adjusted margin to prevent overlap */
     display: inline-block;
     min-width: 16px;
+  }
+
+  .drawflow .drawflow-node .title-box span {
+    white-space: nowrap; /* Prevent text wrapping */
   }
 
   .drawflow .drawflow-node .box {
@@ -88,6 +93,13 @@
   
   .drawflow .drawflow-node.Ruta5 .title-box {
     background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  }
+
+  /* Estilo para nodos bloqueados (premium) */
+  .drawflow-node.locked-node {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    cursor: pointer; /* Keep cursor as pointer to indicate clickability */
   }
 
   .ruta-content {
@@ -370,16 +382,6 @@ const APP_CONFIG = {
       duration: "6",
       linksFile: "ruta5_links.json"
     }
-  },
-
-  // Estructura de datos que se guardará
-  dataStructure: {
-    id: null,
-    nombre: null,
-    rutaSeleccionada: "",
-    progreso: 0,
-    timestamp: null,
-    linksPersonalizados: {}
   }
 };
 
@@ -407,7 +409,8 @@ async function loadTranslations() {
   const lang = navigator.language.startsWith('es') ? 'es' : 'en';
   
   try {
-    const response = await fetch(`./translations/${lang}.json`);
+    // CORRECCIÓN: Ruta de traducciones
+    const response = await fetch(`./administrador_proyectos/${lang}.json`);
     translations = await response.json();
     
     i18next.init({
@@ -446,7 +449,7 @@ function generateRouteHTML(routeKey, routeConfig) {
     <div>
       <div class="title-box">
         <i class="${routeConfig.icon}"></i>
-        <span style="white-space: nowrap;">${t(routeConfig.titleKey)}</span>
+        <span>${t(routeConfig.titleKey)}</span>
       </div>
       <div class="box">
         <div class="ruta-content">
@@ -462,7 +465,7 @@ function generateRouteHTML(routeKey, routeConfig) {
             <ul>${herramientasList}</ul>
           </div>
 
-          <button class="${btnClass}" onclick="seleccionarRuta('${routeKey}', ${routeConfig.isFree})">
+          <button class="${btnClass}" style="pointer-events: none;">
             ${btnText}
           </button>
         </div>
@@ -482,7 +485,7 @@ function generateInitialState() {
       id: nodeId,
       name: routeKey,
       data: {},
-      class: routeKey,
+      class: routeKey + (routeConfig.isFree ? '' : ' locked-node'), // Add locked-node class here
       html: html,
       typenode: false,
       inputs: routeConfig.hasInputs ? { input_1: { connections: [] }} : {},
@@ -527,12 +530,12 @@ function iniciarRutaGratuita(routeKey) {
     document.getElementById("ruta-loader").style.display = "none";
     alert(t('mensaje5'));
     
-    // Guardar progreso
+    // Guardar progreso (simplificado para este ejemplo)
     const rutaData = {
-      ...APP_CONFIG.dataStructure,
       id: Date.now(),
-      nombre: `${t(APP_CONFIG.routes[routeKey].titleKey)}_${Date.now()}`,
+      nombre: `${t(APP_CONFIG.routes[routeKey].titleKey)}`,
       rutaSeleccionada: routeKey,
+      progreso: 0,
       timestamp: new Date().toISOString()
     };
     
@@ -680,7 +683,22 @@ async function inicializarEditor() {
     editor.addConnection(3, 4, "output_1", "input_1");
     // Conectar Ruta3 -> Ruta5
     editor.addConnection(3, 5, "output_1", "input_1");
-  }, 500);
+
+    // Añadir event listeners a los nodos para hacerlos clicables
+    Object.entries(APP_CONFIG.routes).forEach(([routeKey, routeConfig], index) => {
+      const nodeId = index + 1; // Asumiendo que los IDs de nodo coinciden con el orden
+      const nodeElement = document.getElementById(`node-${nodeId}`);
+      if (nodeElement) {
+        nodeElement.addEventListener('click', (event) => {
+          // Evitar que el clic en las conexiones active el nodo
+          if (!event.target.closest('.drawflow-connection')) {
+            seleccionarRuta(routeKey, routeConfig.isFree);
+          }
+        });
+      }
+    });
+
+  }, 500); // Dar tiempo a Drawflow para renderizar
 }
 
 function validarToken() {
