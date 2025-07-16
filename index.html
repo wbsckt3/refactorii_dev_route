@@ -446,7 +446,7 @@ function generateRouteHTML(routeKey, routeConfig) {
     <div>
       <div class="title-box">
         <i class="${routeConfig.icon}"></i>
-        <span style="margin-left: 10px;">${t(routeConfig.titleKey)}</span>
+        <span style="white-space: nowrap;">${t(routeConfig.titleKey)}</span>
       </div>
       <div class="box">
         <div class="ruta-content">
@@ -730,7 +730,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadTranslations();
   updateUITexts();
-  setTimeout(() => inicializarEditor(), 100);
+  inicializarEditor();
 });
 
 // Hacer funciones globales para compatibilidad
