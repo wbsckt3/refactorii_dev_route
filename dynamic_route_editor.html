@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="page-title">Administrador de Proyectos - Rutas de Aprendizaje</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow@0.0.48/dist/drawflow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://unpkg.com/i18next@23.4.6/i18next.min.js"></script>
+
+  <style>
+  body { margin: 0; font-family: 'Roboto', sans-serif; }
+  .wrapper { display: flex; height: 100vh; overflow: hidden; }
+  .col { width: 200px; background: #f5f5f5; border-right: 1px solid #ddd; padding: 10px; box-sizing: border-box; overflow-y: auto; display: none}
+  .col-right { flex: 1; position: relative; }
+  .drag-drawflow { display: flex; align-items: center; padding: 8px; margin: 6px 0; background: #fff; border: 1px solid #ccc; border-radius: 5px; cursor: grab; }
+  .drag-drawflow i { margin-right: 6px; }
+  #controls { padding: 10px; background: #fafafa; border-bottom: 1px solid #ddd; }
+  #drawflow {
+    width: 100%;
+    height: calc(100% - 50px);
+    background-image: 
+      linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    margin-top: -60px;
+  }
+
+  /* ESTILOS DE NODOS PARA RUTAS DE APRENDIZAJE */
+  .drawflow .drawflow-node {
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 0;
+    width: auto;
+    font-family: "Segoe UI", sans-serif;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .drawflow .drawflow-node .title-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .drawflow .drawflow-node .title-box i {
+    margin-right: 10px;
+    display: inline-block;
+    min-width: 16px;
+  }
+
+  .drawflow .drawflow-node .box {
+    padding: 15px;
+    background: #fff;
+    border-radius: 0 0 10px 10px;
+    max-width: 400px;
+  }
+
+  /* Estilos específicos para rutas */
+  .drawflow .drawflow-node.Ruta1 .title-box {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  }
+  
+  .drawflow .drawflow-node.Ruta2 .title-box {
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  }
+  
+  .drawflow .drawflow-node.Ruta3 .title-box {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  }
+  
+  .drawflow .drawflow-node.Ruta4 .title-box {
+    background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+  }
+  
+  .drawflow .drawflow-node.Ruta5 .title-box {
+    background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  }
+
+  .ruta-content {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .ruta-precio {
+    background: #e8f5e8;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .ruta-premium {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+  }
+
+  .herramientas-list {
+    margin: 10px 0;
+  }
+
+  .herramientas-list h5 {
+    margin: 5px 0;
+    color: #333;
+    font-size: 12px;
+  }
+
+  .herramientas-list ul {
+    margin: 5px 0;
+    padding-left: 15px;
+    font-size: 11px;
+  }
+
+  .herramientas-list li {
+    margin: 2px 0;
+    color: #666;
+  }
+
+  .btn-ruta {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .btn-ruta:hover {
+    background: #5a6fd8;
+  }
+
+  .btn-premium {
+    background: #ff9800;
+  }
+
+  .btn-premium:hover {
+    background: #f57c00;
+  }
+
+  /* Loader styles */
+  #ruta-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .loader-container {
+    text-align: center;
+  }
+
+  .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #667eea;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .logo-pi {
+    font-size: 33px;
+    color: #f59e0b;
+    font-weight: bold;
+    margin: 0 0.25rem;
+    margin-top: -5px;
+    margin-right: -16px;
+  }
+
+  /* Auth overlay */
+  #auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .auth-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  /* Conexiones ocultas */
+  .drawflow .drawflow-node .input,
+  .drawflow .drawflow-node .output {
+    display: none;
+  }
+  </style>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="./auth.js" async defer></script>
+</head>
+<body>
+
+<!-- Overlay de autenticación -->
+<div id="auth-overlay">
+  <div class="auth-blur"></div>
+  <div class="auth-content">
+    <span class="logo-pi">π</span>
+    <p style="font-weight: bold; font-size: 20px;">Administrador de Proyectos - Rutas de Aprendizaje</p>
+    <div class="auth-container">
+      <div id="g_id_onload"
+           data-client_id="980822676255-vntch0t28qbesul2bp5oc1galtoi8a97.apps.googleusercontent.com"
+           data-callback="handleCredentialResponse"
+           data-context="use"
+           data-ux_mode="popup"
+           data-auto_select="false"
+           data-itp_support="true">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="rectangular"
+           data-theme="outline"
+           data-text="signin_with"
+           data-size="medium"
+           data-logo_alignment="left">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+  <!-- Canvas Column -->
+  <div class="col-right">
+    <div id="controls" style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+      <span class="logo-pi">π</span>
+      <h1 style="margin: 0; font-size: 17px; color: #0060df;" id="app-title"></h1>
+      <button onclick="iniciarRuta()" id="btn-iniciar-ruta" style="background: #7452ac; color: #fff; border: none; padding: 11px; border-radius: 7px; font-weight: bold;">
+         Iniciar Ruta
+      </button>  
+    </div> 
+    <div id="drawflow" class="drawflow"></div>
+  </div>
+</div>
+
+<div id="ruta-loader" style="display: none;">
+  <div class="loader-container">
+    <div class="spinner"></div>
+    <p id="spinner1">Procesando...</p>
+    <p id="spinner2">Por favor espera...</p>
+  </div>
+</div>
+
+<script>
+// ========================================
+// CONFIGURACIÓN DINÁMICA DE LA APLICACIÓN
+// ========================================
+
+const APP_CONFIG = {
+  // Información básica de la aplicación
+  appInfo: {
+    name: "learning_paths_manager", 
+    title: "Administrador de Proyectos - Rutas de Aprendizaje",
+    storageKey: "rutas_aprendizaje_devops", 
+    apiEndpoint: "learningPaths", 
+    paymentAmount: "140000", // Precio base, se ajusta por ruta
+    paymentDescription: "Ruta de aprendizaje premium"
+  },
+
+  // Definición de rutas de aprendizaje
+  routes: {
+    Ruta1: {
+      icon: "fas fa-server",
+      titleKey: "titulo_nodo1",
+      type: "route",
+      hasInputs: false,
+      hasOutputs: true,
+      position: { x: 50, y: 50 },
+      width: "400px",
+      isFree: true,
+      price: "0",
+      duration: "6",
+      linksFile: "ruta1_links.json"
+    },
+    Ruta2: {
+      icon: "fas fa-database",
+      titleKey: "titulo_nodo2", 
+      type: "route",
+      hasInputs: true,
+      hasOutputs: true,
+      position: { x: 500, y: 50 },
+      width: "400px",
+      isFree: false,
+      price: "140000",
+      duration: "2",
+      linksFile: "ruta2_links.json"
+    },
+    Ruta3: {
+      icon: "fas fa-code",
+      titleKey: "titulo_nodo3",
+      type: "route", 
+      hasInputs: true,
+      hasOutputs: true,
+      position: { x: 950, y: 50 },
+      width: "400px",
+      isFree: false,
+      price: "700000",
+      duration: "10",
+      linksFile: "ruta3_links.json"
+    },
+    Ruta4: {
+      icon: "fas fa-paint-brush",
+      titleKey: "titulo_nodo4",
+      type: "route",
+      hasInputs: true, 
+      hasOutputs: true,
+      position: { x: 275, y: 350 },
+      width: "400px",
+      isFree: false,
+      price: "350000",
+      duration: "5",
+      linksFile: "ruta4_links.json"
+    },
+    Ruta5: {
+      icon: "fas fa-robot",
+      titleKey: "titulo_nodo5",
+      type: "route",
+      hasInputs: true,
+      hasOutputs: true,
+      position: { x: 725, y: 350 },
+      width: "400px", 
+      isFree: false,
+      price: "420000",
+      duration: "6",
+      linksFile: "ruta5_links.json"
+    }
+  },
+
+  // Estructura de datos que se guardará
+  dataStructure: {
+    id: null,
+    nombre: null,
+    rutaSeleccionada: "",
+    progreso: 0,
+    timestamp: null,
+    linksPersonalizados: {}
+  }
+};
+
+// ========================================
+// INICIALIZACIÓN DEL EDITOR
+// ========================================
+
+const container = document.getElementById("drawflow");
+const editor = new Drawflow(container);
+editor.reroute = true;
+editor.editor_mode = "edit"; 
+editor.start();
+
+// Variables globales
+let rutasGeneradas = [];
+let rutaCounter = 1;
+let socket;
+let translations = {};
+
+// ========================================
+// CONFIGURACIÓN DE INTERNACIONALIZACIÓN
+// ========================================
+
+async function loadTranslations() {
+  const lang = navigator.language.startsWith('es') ? 'es' : 'en';
+  
+  try {
+    const response = await fetch(`./administrador_proyectos/${lang}.json`);
+    translations = await response.json();
+    
+    i18next.init({
+      lng: lang,
+      resources: {
+        [lang]: {
+          translation: translations
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error loading translations:', error);
+    translations = {};
+  }
+}
+
+// ========================================
+// FUNCIONES DINÁMICAS DE GENERACIÓN
+// ========================================
+
+function t(key) {
+  return i18next.t(key) || translations[key] || key;
+}
+
+function generateRouteHTML(routeKey, routeConfig) {
+  const herramientas = translations[`herramientas_${routeKey.toLowerCase()}`] || [];
+  const herramientasList = herramientas.map(h => `<li>${h}</li>`).join('');
+  
+  const estadoClass = routeConfig.isFree ? '' : 'ruta-premium';
+  const estadoText = routeConfig.isFree ? t(`estado_${routeKey.toLowerCase()}`) : t(`estado_${routeKey.toLowerCase()}`);
+  const precioText = routeConfig.isFree ? t(`precio_${routeKey.toLowerCase()}`) : t(`precio_${routeKey.toLowerCase()}`);
+  const btnClass = routeConfig.isFree ? 'btn-ruta' : 'btn-ruta btn-premium';
+  const btnText = routeConfig.isFree ? t('boton1') : t('boton3');
+
+  return `
+    <div>
+      <div class="title-box">
+        <i class="${routeConfig.icon}"></i>
+        <span style="margin-left: 10px;">${t(routeConfig.titleKey)}</span>
+      </div>
+      <div class="box">
+        <div class="ruta-content">
+          <p><strong>${t(`contenido_${routeKey.toLowerCase()}`)}</strong></p>
+          <p style="color: #666; font-size: 12px;">${t(`descripcion_${routeKey.toLowerCase()}`)}</p>
+          
+          <div class="ruta-precio ${estadoClass}">
+            ${precioText} - ${t(`duracion_${routeKey.toLowerCase()}`)} - ${estadoText}
+          </div>
+
+          <div class="herramientas-list">
+            <h5>🛠️ Herramientas y Tecnologías:</h5>
+            <ul>${herramientasList}</ul>
+          </div>
+
+          <button class="${btnClass}" onclick="seleccionarRuta('${routeKey}', ${routeConfig.isFree})">
+            ${btnText}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function generateInitialState() {
+  const nodes = {};
+  let nodeId = 1;
+  
+  Object.entries(APP_CONFIG.routes).forEach(([routeKey, routeConfig]) => {
+    const html = generateRouteHTML(routeKey, routeConfig);
+    
+    nodes[nodeId] = {
+      id: nodeId,
+      name: routeKey,
+      data: {},
+      class: routeKey,
+      html: html,
+      typenode: false,
+      inputs: routeConfig.hasInputs ? { input_1: { connections: [] }} : {},
+      outputs: routeConfig.hasOutputs ? { output_1: { connections: [] }} : {},
+      pos_x: routeConfig.position.x,
+      pos_y: routeConfig.position.y
+    };
+    
+    nodeId++;
+  });
+  
+  return {
+    drawflow: {
+      Home: {
+        data: nodes
+      }
+    }
+  };
+}
+
+// ========================================
+// FUNCIONES PRINCIPALES
+// ========================================
+
+function seleccionarRuta(routeKey, isFree) {
+  const routeConfig = APP_CONFIG.routes[routeKey];
+  
+  if (!isFree) {
+    mostrarModalPago(routeKey, routeConfig);
+    return;
+  }
+  
+  // Ruta gratuita - proceder directamente
+  iniciarRutaGratuita(routeKey);
+}
+
+function iniciarRutaGratuita(routeKey) {
+  document.getElementById("ruta-loader").style.display = "flex";
+  
+  // Simular carga de recursos
+  setTimeout(() => {
+    document.getElementById("ruta-loader").style.display = "none";
+    alert(t('mensaje5'));
+    
+    // Guardar progreso
+    const rutaData = {
+      ...APP_CONFIG.dataStructure,
+      id: Date.now(),
+      nombre: `${t(APP_CONFIG.routes[routeKey].titleKey)}_${Date.now()}`,
+      rutaSeleccionada: routeKey,
+      timestamp: new Date().toISOString()
+    };
+    
+    let rutasGuardadas = JSON.parse(localStorage.getItem(APP_CONFIG.appInfo.storageKey)) || [];
+    rutasGuardadas.push(rutaData);
+    localStorage.setItem(APP_CONFIG.appInfo.storageKey, JSON.stringify(rutasGuardadas));
+    
+    // Cargar links dinámicos de la ruta
+    cargarLinksRuta(routeKey);
+  }, 2000);
+}
+
+async function cargarLinksRuta(routeKey) {
+  const routeConfig = APP_CONFIG.routes[routeKey];
+  
+  try {
+    // Intentar cargar desde GitHub Pages (configurar después)
+    const response = await fetch(`https://tu-usuario.github.io/learning-resources/${routeConfig.linksFile}`);
+    
+    if (response.ok) {
+      const links = await response.json();
+      console.log(`Links cargados para ${routeKey}:`, links);
+      // Aquí puedes procesar los links dinámicos
+    } else {
+      // Fallback a links por defecto
+      console.log(`Usando links por defecto para ${routeKey}`);
+      const defaultLinks = generateDefaultLinks(routeKey);
+      console.log('Links por defecto:', defaultLinks);
+    }
+  } catch (error) {
+    console.error('Error cargando links:', error);
+    const defaultLinks = generateDefaultLinks(routeKey);
+    console.log('Links por defecto por error:', defaultLinks);
+  }
+}
+
+function generateDefaultLinks(routeKey) {
+  // Links por defecto para cada ruta
+  const defaultLinksMap = {
+    Ruta1: [
+      { title: "CentOS Setup Guide", url: "https://example.com/centos-guide", type: "tutorial" },
+      { title: "Nginx Configuration", url: "https://example.com/nginx-config", type: "documentation" },
+      { title: "Let's Encrypt SSL", url: "https://example.com/ssl-setup", type: "tutorial" }
+    ],
+    Ruta2: [
+      { title: "MongoDB Atlas Setup", url: "https://example.com/mongodb-atlas", type: "tutorial" },
+      { title: "NoSQL Best Practices", url: "https://example.com/nosql-practices", type: "documentation" }
+    ],
+    Ruta3: [
+      { title: "Node.js API Development", url: "https://example.com/nodejs-api", type: "tutorial" },
+      { title: "Express.js Guide", url: "https://example.com/express-guide", type: "documentation" },
+      { title: "JWT Authentication", url: "https://example.com/jwt-auth", type: "tutorial" }
+    ],
+    Ruta4: [
+      { title: "Vercel V0 Documentation", url: "https://v0.dev", type: "tool" },
+      { title: "React TypeScript Guide", url: "https://example.com/react-ts", type: "tutorial" }
+    ],
+    Ruta5: [
+      { title: "OpenAI API Integration", url: "https://example.com/openai-api", type: "tutorial" },
+      { title: "GitHub Actions CI/CD", url: "https://example.com/github-actions", type: "documentation" }
+    ]
+  };
+  
+  return defaultLinksMap[routeKey] || [];
+}
+
+function mostrarModalPago(routeKey, routeConfig) {
+  const mensajeDiv = document.createElement("div");
+  mensajeDiv.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); display: flex;
+    align-items: center; justify-content: center; z-index: 9999;
+  `;
+
+  mensajeDiv.innerHTML = `
+    <div style="background: white; padding: 20px; border-radius: 12px; max-width: 400px; text-align: center;">
+      <h3 style="margin-bottom: 16px;">${t('mensaje4')}</h3>
+      <p style="margin-bottom: 20px;">
+        <strong>${t(routeConfig.titleKey)}</strong><br>
+        Precio: $${routeConfig.price}<br>
+        Duración: ${routeConfig.duration} horas
+      </p>
+      <form id="epayco-form"></form>
+      <button onclick="this.parentElement.parentElement.remove()" 
+              style="margin-top: 10px; background-color: #ccc; border: none; padding: 8px 16px; border-radius: 6px;">
+        Cerrar
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(mensajeDiv);
+  setupPayment(routeKey, routeConfig);
+}
+
+function setupPayment(routeKey, routeConfig) {
+  const script = document.createElement("script");
+  script.src = "https://checkout.epayco.co/checkout.js";
+  script.async = true;
+
+  const config = {
+    "data-epayco-key": "22df602dbc00053066ae1a175757d389",
+    "class": "epayco-button",
+    "data-epayco-amount": routeConfig.price,
+    "data-epayco-tax": "0",
+    "data-epayco-tax-base": routeConfig.price,
+    "data-epayco-name": t(routeConfig.titleKey),
+    "data-epayco-description": `${t(routeConfig.titleKey)} - ${routeConfig.duration} horas`,
+    "data-epayco-currency": "cop",
+    "data-epayco-country": "co",
+    "data-epayco-test": "false",
+    "data-epayco-external": "true",
+    "data-epayco-extra1": routeKey,
+    "data-epayco-response": "https://www.refactorii.com/apiePayco/respuesta-epayco.html",
+    "data-epayco-confirmation": "https://www.refactorii.com/epaycoConfirmationCallback",
+    "data-epayco-button": 'https://multimedia.epayco.co/dashboard/btns/btn5.png'
+  };
+
+  Object.entries(config).forEach(([key, value]) => {
+    script.setAttribute(key, value);
+  });
+
+  script.className = "epayco-button";
+  document.getElementById("epayco-form").appendChild(script);
+}
+
+// ========================================
+// FUNCIONES DE INICIALIZACIÓN
+// ========================================
+
+async function inicializarEditor() {
+  try {
+    const estadoInicial = generateInitialState();
+    editor.import(estadoInicial);
+  } catch (e) {
+    console.error("❌ Error al importar estadoInicial:", e);
+  }
+
+  // Conectar rutas con líneas
+  setTimeout(() => {
+    // Conectar Ruta1 -> Ruta2
+    editor.addConnection(1, 2, "output_1", "input_1");
+    // Conectar Ruta2 -> Ruta3  
+    editor.addConnection(2, 3, "output_1", "input_1");
+    // Conectar Ruta3 -> Ruta4
+    editor.addConnection(3, 4, "output_1", "input_1");
+    // Conectar Ruta3 -> Ruta5
+    editor.addConnection(3, 5, "output_1", "input_1");
+  }, 500);
+}
+
+function validarToken() {
+  const token = localStorage.getItem("refactorii_token");
+  const expiry = parseInt(localStorage.getItem("token_expiry") || "0", 10);
+  
+  if (!token || !expiry) {
+    return false;
+  }
+  
+  if (Date.now() > expiry) {
+    alert("Tu sesión ha expirado. Por favor vuelve a iniciar sesión.");
+    localStorage.clear();
+    return false;
+  }
+  
+  return true;
+}
+
+function updateUITexts() {
+  document.getElementById("page-title").textContent = APP_CONFIG.appInfo.title;
+  document.getElementById("app-title").textContent = "Refactorii | " + APP_CONFIG.appInfo.title;
+  document.getElementById("btn-iniciar-ruta").textContent = t('boton1');
+  document.getElementById("spinner1").textContent = t('mensaje1');
+  document.getElementById("spinner2").textContent = t('mensaje2');
+}
+
+function iniciarRuta() {
+  alert(t('mensaje6'));
+}
+
+// ========================================
+// INICIALIZACIÓN DE LA APLICACIÓN
+// ========================================
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const overlay = document.getElementById('auth-overlay');
+  const loggedIn = validarToken();
+
+  if (loggedIn) {
+    overlay.style.display = 'none';
+    document.body.classList.remove('auth-lock');
+  } else {
+    overlay.style.display = 'flex';
+    document.body.classList.add('auth-lock');
+  }
+
+  await loadTranslations();
+  updateUITexts();
+  setTimeout(() => inicializarEditor(), 100);
+});
+
+// Hacer funciones globales para compatibilidad
+window.seleccionarRuta = seleccionarRuta;
+window.iniciarRuta = iniciarRuta;
+</script>
+</body>
+</html>
