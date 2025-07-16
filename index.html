@@ -410,7 +410,7 @@ async function loadTranslations() {
   
   try {
     // CORRECCIÓN: Ruta de traducciones
-    const response = await fetch(`./administrador_proyectos/${lang}.json`);
+    const response = await fetch(`./translations/${lang}.json`);
     translations = await response.json();
     
     i18next.init({
