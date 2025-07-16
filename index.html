@@ -325,10 +325,12 @@ const APP_CONFIG = {
       hasOutputs: true,
       position: { x: 50, y: 50 },
       width: "400px",
-      isFree: true,
-      price: "0",
+      isFree: false, // Ahora premium
+      price: "420000",
       duration: "6",
-      linksFile: "ruta1_links.json"
+      linksFile: "ruta1_links.json",
+      isPromotion: true, // Nueva: Marcada como promoción
+      discountPercentage: 50 // Nueva: Porcentaje de descuento
     },
     Ruta2: {
       icon: "fas fa-database",
@@ -409,7 +411,6 @@ async function loadTranslations() {
   const lang = navigator.language.startsWith('es') ? 'es' : 'en';
   
   try {
-    // CORRECCIÓN: Ruta de traducciones
     const response = await fetch(`./translations/${lang}.json`);
     translations = await response.json();
     
@@ -438,18 +439,43 @@ function t(key) {
 function generateRouteHTML(routeKey, routeConfig) {
   const herramientas = translations[`herramientas_${routeKey.toLowerCase()}`] || [];
   const herramientasList = herramientas.map(h => `<li>${h}</li>`).join('');
-  
-  const estadoClass = routeConfig.isFree ? '' : 'ruta-premium';
-  const estadoText = routeConfig.isFree ? t(`estado_${routeKey.toLowerCase()}`) : t(`estado_${routeKey.toLowerCase()}`);
-  const precioText = routeConfig.isFree ? t(`precio_${routeKey.toLowerCase()}`) : t(`precio_${routeKey.toLowerCase()}`);
-  const btnClass = routeConfig.isFree ? 'btn-ruta' : 'btn-ruta btn-premium';
-  const btnText = routeConfig.isFree ? t('boton1') : t('boton3');
+
+  let estadoClass = routeConfig.isFree ? '' : 'ruta-premium';
+  let estadoText = t(`estado_${routeKey.toLowerCase()}`);
+  let precioText = t(`precio_${routeKey.toLowerCase()}`);
+  let btnHtml = ''; // Initialize button HTML
+
+  if (routeConfig.isPromotion) {
+    const originalPrice = parseFloat(routeConfig.price);
+    const discountedPrice = originalPrice * (1 - routeConfig.discountPercentage / 100);
+    precioText = `<s>$${originalPrice.toLocaleString()}</s> $${discountedPrice.toLocaleString()}`;
+    estadoText += ` - ${t('en_promocion')}`;
+    
+    // Botón de Epayco para la promoción
+    btnHtml = `
+      <img src="https://multimedia.epayco.co/dashboard/btns/btn5.png" 
+           alt="${t('comprar_con_descuento')}" 
+           style="width: 100%; cursor: pointer; margin-top: 10px; display: block;"
+           onclick="event.stopPropagation(); seleccionarRuta('${routeKey}');" />
+      <p style="font-size: 11px; text-align: center; margin-top: 5px; color: #666;">
+        ${t('comprar_con_descuento')}
+      </p>
+    `;
+  } else {
+    const btnClass = routeConfig.isFree ? 'btn-ruta' : 'btn-ruta btn-premium';
+    const btnText = routeConfig.isFree ? t('boton1') : t('boton3');
+    btnHtml = `
+      <button class="${btnClass}" style="pointer-events: none;">
+        ${btnText}
+      </button>
+    `;
+  }
 
   return `
     <div>
       <div class="title-box">
         <i class="${routeConfig.icon}"></i>
-        <span style="margin-left: 20px">${t(routeConfig.titleKey)}</span>
+        <span>${t(routeConfig.titleKey)}</span>
       </div>
       <div class="box">
         <div class="ruta-content">
@@ -465,9 +491,7 @@ function generateRouteHTML(routeKey, routeConfig) {
             <ul>${herramientasList}</ul>
           </div>
 
-          <button class="${btnClass}" style="pointer-events: none;">
-            ${btnText}
-          </button>
+          ${btnHtml}
         </div>
       </div>
     </div>
@@ -510,16 +534,14 @@ function generateInitialState() {
 // FUNCIONES PRINCIPALES
 // ========================================
 
-function seleccionarRuta(routeKey, isFree) {
+function seleccionarRuta(routeKey) { // Removed isFree parameter
   const routeConfig = APP_CONFIG.routes[routeKey];
   
-  if (!isFree) {
+  if (routeConfig.isFree) { // Check isFree from config
+    iniciarRutaGratuita(routeKey);
+  } else {
     mostrarModalPago(routeKey, routeConfig);
-    return;
   }
-  
-  // Ruta gratuita - proceder directamente
-  iniciarRutaGratuita(routeKey);
 }
 
 function iniciarRutaGratuita(routeKey) {
@@ -603,6 +625,16 @@ function generateDefaultLinks(routeKey) {
 }
 
 function mostrarModalPago(routeKey, routeConfig) {
+  let priceToUse = routeConfig.price;
+  let descriptionToUse = `${t(routeConfig.titleKey)} - ${routeConfig.duration} horas`;
+
+  if (routeConfig.isPromotion) {
+    const originalPrice = parseFloat(routeConfig.price);
+    const discountedPrice = originalPrice * (1 - routeConfig.discountPercentage / 100);
+    priceToUse = discountedPrice.toFixed(0); // Epayco espera string, sin decimales para COP
+    descriptionToUse = `${t(routeConfig.titleKey)} - ${routeConfig.duration} horas (${t('en_promocion')})`;
+  }
+
   const mensajeDiv = document.createElement("div");
   mensajeDiv.style.cssText = `
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -615,7 +647,7 @@ function mostrarModalPago(routeKey, routeConfig) {
       <h3 style="margin-bottom: 16px;">${t('mensaje4')}</h3>
       <p style="margin-bottom: 20px;">
         <strong>${t(routeConfig.titleKey)}</strong><br>
-        Precio: $${routeConfig.price}<br>
+        Precio: $${parseFloat(priceToUse).toLocaleString()}<br>
         Duración: ${routeConfig.duration} horas
       </p>
       <form id="epayco-form"></form>
@@ -627,10 +659,10 @@ function mostrarModalPago(routeKey, routeConfig) {
   `;
 
   document.body.appendChild(mensajeDiv);
-  setupPayment(routeKey, routeConfig);
+  setupPayment(routeKey, priceToUse, descriptionToUse); // Pass price and description
 }
 
-function setupPayment(routeKey, routeConfig) {
+function setupPayment(routeKey, amount, description) { // Updated signature
   const script = document.createElement("script");
   script.src = "https://checkout.epayco.co/checkout.js";
   script.async = true;
@@ -638,11 +670,11 @@ function setupPayment(routeKey, routeConfig) {
   const config = {
     "data-epayco-key": "22df602dbc00053066ae1a175757d389",
     "class": "epayco-button",
-    "data-epayco-amount": routeConfig.price,
+    "data-epayco-amount": amount, // Use passed amount
     "data-epayco-tax": "0",
-    "data-epayco-tax-base": routeConfig.price,
-    "data-epayco-name": t(routeConfig.titleKey),
-    "data-epayco-description": `${t(routeConfig.titleKey)} - ${routeConfig.duration} horas`,
+    "data-epayco-tax-base": amount, // Use passed amount
+    "data-epayco-name": description, // Use passed description
+    "data-epayco-description": description, // Use passed description
     "data-epayco-currency": "cop",
     "data-epayco-country": "co",
     "data-epayco-test": "false",
@@ -690,9 +722,9 @@ async function inicializarEditor() {
       const nodeElement = document.getElementById(`node-${nodeId}`);
       if (nodeElement) {
         nodeElement.addEventListener('click', (event) => {
-          // Evitar que el clic en las conexiones active el nodo
-          if (!event.target.closest('.drawflow-connection')) {
-            seleccionarRuta(routeKey, routeConfig.isFree);
+          // Evitar que el clic en las conexiones o en el botón de Epayco active el nodo
+          if (!event.target.closest('.drawflow-connection') && !event.target.closest('img[src*="epayco.co"]')) {
+            seleccionarRuta(routeKey);
           }
         });
       }
