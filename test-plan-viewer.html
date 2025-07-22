@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visor de Plan de Pruebas</title>
+  <!-- Marked.js para convertir Markdown a HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Mermaid.js para renderizar diagramas -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 20px;
+      background-color: #f9f9f9;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: #2c3e50;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+    }
+    h1 { font-size: 2.2em; border-bottom: 2px solid #eee; padding-bottom: 0.3em; }
+    h2 { font-size: 1.8em; }
+    h3 { font-size: 1.4em; }
+    p { margin-bottom: 1em; }
+    ul, ol {
+      margin-bottom: 1em;
+      padding-left: 20px;
+    }
+    li { margin-bottom: 0.5em; }
+    pre {
+      background-color: #2d2d2d;
+      color: #f8f8f2;
+      padding: 1em;
+      border-radius: 5px;
+      overflow-x: auto;
+      margin-bottom: 1em;
+    }
+    code {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      background-color: #e0e0e0;
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      color: #c7254e;
+    }
+    pre code {
+      background-color: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1em;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .mermaid {
+      background-color: #fff;
+      padding: 1em;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      margin-bottom: 1em;
+    }
+    .header-icon {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="markdown-output"></div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('plan.json')
+      .then(response => response.json())
+      .then(aiOutput => {
+        renderMarkdownFromAIOutput(aiOutput);
+      })
+      .catch(error => {
+        console.error('Error al cargar plan.json:', error);
+      });
+  });
+
+  function renderMarkdownFromAIOutput(aiOutput) {
+    const markdownOutputDiv = document.getElementById('markdown-output');
+    
+    const introMarkdown = `
+	# Información General del Plan de Pruebas
+
+	- **ID**: ${aiOutput.id}
+	- **Nombre**: ${aiOutput.nombre}
+	- **Test ID**: ${aiOutput.testId}
+	- **Objetivo**: ${aiOutput.objetivo}
+
+	## Precondiciones:
+	${aiOutput.precondiciones}
+
+	## Pasos:
+	${aiOutput.pasos}
+
+	## Datos de Prueba:
+	${aiOutput.datosPrueba}
+
+	## Resultado Esperado:
+	${aiOutput.resultadoEsperado}
+
+	## Criterios de Aceptación:
+	${aiOutput.criteriosAceptacion}
+
+	- **Tipo de Aplicación**: ${aiOutput.tipoAplicacion}
+	- **Tipo de Prueba**: ${aiOutput.tipoPrueba}
+	- **Framework**: ${aiOutput.framework}
+	- **Pipeline**: ${aiOutput.pipeline}
+	- **Prioridad**: ${aiOutput.prioridad}
+	- **Fecha de Ejecución**: ${aiOutput.fechaEjecucion}
+	- **Ambiente**: ${aiOutput.ambiente}
+	- **Progreso**: ${aiOutput.progreso}
+	- **Timestamp**: ${aiOutput.timestamp}
+
+	---
+	`;
+
+    let exercisesMarkdown = aiOutput.exercises || '';
+    exercisesMarkdown = exercisesMarkdown.replace(/```(markdown)?/g, '');
+    exercisesMarkdown = exercisesMarkdown.replace(/\\n(sql|json|javascript|yaml|mermaid|gherkin)\\n/g, '\n');
+
+    const fullMarkdownContent = introMarkdown + exercisesMarkdown;
+
+    marked.setOptions({
+      langPrefix: 'language-',
+      gfm: true,
+      breaks: true
+    });
+
+    const htmlContent = marked.parse(fullMarkdownContent);
+    markdownOutputDiv.innerHTML = htmlContent;
+
+    mermaid.initialize({ startOnLoad: true });
+  }
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const markdownOutputDiv = document.getElementById('markdown-output');
+      const exercisesMarkdown = aiOutput.exercises;
+
+      // Configure marked.js to handle code blocks and Mermaid diagrams
+      marked.setOptions({
+        highlight: function(code, lang) {
+          // For Mermaid diagrams, just return the code as is,
+          // Mermaid.js will process it later.
+          if (lang === 'mermaid') {
+            return code;
+          }
+          // For other languages, you might use a syntax highlighter like highlight.js
+          // For this example, we'll just return the code as is.
+          return code;
+        },
+        langPrefix: 'language-', // For syntax highlighting libraries
+        gfm: true, // Enable GitHub Flavored Markdown
+        breaks: true // Enable GFM line breaks
+      });
+
+      // Custom renderer to add specific classes or modify elements if needed
+      const renderer = new marked.Renderer();
+
+      // Override heading rendering to add icons (optional, based on your markdown)
+      renderer.heading = function (text, level, raw) {
+        let icon = '';
+        if (level === 1) icon = '📝'; // Plan
+        if (level === 2) {
+          if (text.includes('Escenario de Prueba')) icon = '🔍';
+          else if (text.includes('Estrategia de Automatización')) icon = '🤖';
+          else if (text.includes('Diseño Técnico')) icon = '💻';
+          else if (text.includes('Integración CI/CD')) icon = '🔄';
+          else if (text.includes('Código Base')) icon = '🖥️';
+          else if (text.includes('Métricas y Monitoreo')) icon = '📊';
+        }
+        if (level === 3) {
+          if (text.includes('Identificación')) icon = '🏷️';
+          else if (text.includes('Precondiciones')) icon = '⚙️';
+          else if (text.includes('Pasos de Ejecución')) icon = '🚀';
+          else if (text.includes('Datos de Prueba')) icon = '📊';
+          else if (text.includes('Resultado Esperado')) icon = '✅';
+          else if (text.includes('Criterios de Aceptación')) icon = '💡';
+          else if (text.includes('Criterios de Salida')) icon = '🚪';
+          else if (text.includes('Justificación')) icon = '📈';
+          else if (text.includes('Nivel de Prueba')) icon = '🏗️';
+          else if (text.includes('Enfoque')) icon = '🎯';
+          else if (text.includes('Riesgos y Mitigación')) icon = '⚠️';
+          else if (text.includes('Framework Justificado')) icon = '🛠️';
+          else if (text.includes('Arquitectura')) icon = '🏛️';
+          else if (text.includes('Configuración Ambiente')) icon = '⚙️';
+          else if (text.includes('Gestión de Datos')) icon = '🗃️';
+          else if (text.includes('Sincronización')) icon = '⏱️';
+          else if (text.includes('Pipeline GitLab')) icon = '📦';
+          else if (text.includes('Triggers')) icon = '🚦';
+          else if (text.includes('Reportes')) icon = '📊';
+          else if (text.includes('Notificaciones')) icon = '🔔';
+          else if (text.includes('Rollback')) icon = '↩️';
+          else if (text.includes('KPIs')) icon = '🎯';
+          else if (text.includes('Calidad Código')) icon = '🔍';
+          else if (text.includes('Indicadores')) icon = '📈';
+          else if (text.includes('Tiempos')) icon = '⏱️';
+        }
+        return `<h${level}><span class="header-icon">${icon}</span>${text}</h${level}>`;
+      };
+
+      // Convert markdown to HTML
+      const htmlContent = marked.parse(exercisesMarkdown, { renderer: renderer });
+      markdownOutputDiv.innerHTML = htmlContent;
+
+      // Initialize Mermaid.js after the content is in the DOM
+      // It will look for elements with class 'mermaid' or 'language-mermaid'
+      mermaid.initialize({ startOnLoad: true });
+    });
+  </script>
+</body>
+</html>
+
