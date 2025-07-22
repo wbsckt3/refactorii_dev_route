@@ -100,27 +100,7 @@
     const markdownOutputDiv = document.getElementById('markdown-output');
     
     const introMarkdown = `
-	# Información General del Plan de Pruebas
-
-	ID: ${aiOutput.id}
-	Nombre: ${aiOutput.nombre}
-	Test ID: ${aiOutput.testId}
-	Objetivo: ${aiOutput.objetivo}
-
-	## Precondiciones:
-	${aiOutput.precondiciones}
-
-	## Pasos:
-	${aiOutput.pasos}
-
-	## Datos de Prueba:
-	${aiOutput.datosPrueba}
-
-	## Resultado Esperado:
-	${aiOutput.resultadoEsperado}
-
-	## Criterios de Aceptación:
-	${aiOutput.criteriosAceptacion}
+	Plan de automatización:
 
 	- **Tipo de Aplicación**: ${aiOutput.tipoAplicacion}
 	- **Tipo de Prueba**: ${aiOutput.tipoPrueba}
@@ -131,8 +111,6 @@
 	- **Ambiente**: ${aiOutput.ambiente}
 	- **Progreso**: ${aiOutput.progreso}
 	- **Timestamp**: ${aiOutput.timestamp}
-
-	---
 	`;
 
     let exercisesMarkdown = aiOutput.exercises || '';
