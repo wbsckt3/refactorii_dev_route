@@ -4,12 +4,12 @@
   testId: 'TC_AUTH_LOGIN_001',
   objetivo: 'Verificar que un usuario registrado puede autenticarse exitosamente en el sistema CRM utilizando credenciales válidas, validando la funcionalidad de login, redirección al dashboard principal y carga correcta de los elementos de la interfaz de usuario según los requisitos funcionales RF-001 y RF-002.',
   precondiciones: "- Usuario con rol 'Sales Manager' registrado en base de datos (email: testuser@company.com, password: Test123!@#)\n" +
-    '- Base de datos MySQL en estado limpio con datos de prueba cargados\n' +
-    '- Servidor de aplicación en ambiente QA ejecutándose en puerto 8080\n' +
-    '- Navegador Chrome versión 120+ instalado y configurado\n' +
-    '- Conexión de red estable (latencia < 100ms)\n' +
-    '- Certificados SSL válidos configurados\n' +
-    '- Session storage y cookies habilitadas en navegador',
+     "- Base de datos MySQL en estado limpio con datos de prueba cargados\n " +
+     "- Servidor de aplicación en ambiente QA ejecutándose en puerto 8080\n " +
+     "- Navegador Chrome versión 120+ instalado y configurado\n" +
+     "- Conexión de red estable (latencia < 100ms)\n" +
+     "- Certificados SSL válidos configurados\n" +
+     "- Session storage y cookies habilitadas en navegador'",
   pasos: '1. Abrir navegador Chrome y navegar a https://qa-crm.company.com/login\n' +
     '2. Verificar que la página de login se carga completamente (título, formulario, botones)\n' +
     "3. Ingresar email válido en campo 'username': testuser@company.com\n" +
