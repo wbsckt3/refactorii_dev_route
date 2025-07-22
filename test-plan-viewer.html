@@ -141,10 +141,16 @@
     const fullMarkdownContent = introMarkdown + exercisesMarkdown;
 
     marked.setOptions({
-      langPrefix: 'language-',
-      gfm: true,
-      breaks: true
-    });
+	  highlight: function(code, lang) {
+	    if (lang && hljs.getLanguage(lang)) {
+	      return hljs.highlight(code, { language: lang }).value;
+	    }
+	    return code;
+	  },
+	  langPrefix: 'language-',
+	  gfm: true,
+	  breaks: true
+	});
 
     const htmlContent = marked.parse(fullMarkdownContent);
     markdownOutputDiv.innerHTML = htmlContent;
