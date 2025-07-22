@@ -1,0 +1,376 @@
+{
+  id: 1,
+  nombre: 'Plan_Automatizacion_Login_001',
+  testId: 'TC_AUTH_LOGIN_001',
+  objetivo: 'Verificar que un usuario registrado puede autenticarse exitosamente en el sistema CRM utilizando credenciales válidas, validando la funcionalidad de login, redirección al dashboard principal y carga correcta de los elementos de la interfaz de usuario según los requisitos funcionales RF-001 y RF-002.',
+  precondiciones: "- Usuario con rol 'Sales Manager' registrado en base de datos (email: testuser@company.com, password: Test123!@#)\n" +
+    '- Base de datos MySQL en estado limpio con datos de prueba cargados\n' +
+    '- Servidor de aplicación en ambiente QA ejecutándose en puerto 8080\n' +
+    '- Navegador Chrome versión 120+ instalado y configurado\n' +
+    '- Conexión de red estable (latencia < 100ms)\n' +
+    '- Certificados SSL válidos configurados\n' +
+    '- Session storage y cookies habilitadas en navegador',
+  pasos: '1. Abrir navegador Chrome y navegar a https://qa-crm.company.com/login\n' +
+    '2. Verificar que la página de login se carga completamente (título, formulario, botones)\n' +
+    "3. Ingresar email válido en campo 'username': testuser@company.com\n" +
+    "4. Ingresar contraseña válida en campo 'password': Test123!@#\n" +
+    "5. Hacer clic en botón 'Iniciar Sesión' (id='login-btn')\n" +
+    '6. Esperar redirección automática (máximo 3 segundos)\n' +
+    '7. Verificar carga completa del dashboard principal\n' +
+    '8. Validar elementos UI críticos: menú navegación, widget bienvenida, datos usuario\n' +
+    '9. Verificar ausencia de errores JavaScript en consola del navegador',
+  datosPrueba: 'DATOS VÁLIDOS:\n' +
+    '- Email: testuser@company.com\n' +
+    '- Password: Test123!@#\n' +
+    '- Rol esperado: Sales Manager\n' +
+    '- ID Usuario: 12345\n' +
+    '- Nombre completo: Juan Pérez González\n' +
+    '\n' +
+    'DATA SET ADICIONAL:\n' +
+    '- URL Base: https://qa-crm.company.com\n' +
+    '- Timeout máximo: 30 segundos\n' +
+    '- User-Agent: Chrome/120.0.0.0\n' +
+    '- Resolución pantalla: 1920x1080\n' +
+    '- Zona horaria: GMT-5',
+  resultadoEsperado: '- HTTP Status Code 200 en respuesta de autenticación\n' +
+    '- Redirección exitosa a /dashboard en máximo 3 segundos\n' +
+    '- Token JWT válido almacenado en sessionStorage\n' +
+    "- Mensaje de bienvenida visible: 'Bienvenido, Juan Pérez'\n" +
+    '- Menú principal cargado con opciones: Clientes, Ventas, Reportes, Configuración\n' +
+    '- Widget de estadísticas personales visible con datos actualizados\n' +
+    '- Footer con información de sesión: fecha/hora último acceso\n' +
+    '- URL final: https://qa-crm.company.com/dashboard\n' +
+    "- Título de página: 'CRM Dashboard - Sales Manager'",
+  criteriosAceptacion: 'FUNCIONALES:\n' +
+    '- Tiempo de respuesta de autenticación < 2 segundos\n' +
+    '- Tiempo total de carga del dashboard < 5 segundos\n' +
+    '- Todos los elementos críticos de UI visibles y funcionales\n' +
+    '- Datos de usuario correctos mostrados en interfaz\n' +
+    '\n' +
+    'TÉCNICOS:\n' +
+    '- Sin errores JavaScript en consola del navegador\n' +
+    '- Sin errores HTTP 4xx o 5xx en Network tab\n' +
+    '- Memoria utilizada por página < 50MB\n' +
+    '- CPU usage durante carga < 80%\n' +
+    '\n' +
+    'SEGURIDAD:\n' +
+    '- Token de sesión generado y almacenado correctamente\n' +
+    '- Headers de seguridad presentes (X-Frame-Options, CSP)\n' +
+    '- Contraseña no visible en logs o network requests',
+  tipoAplicacion: 'Web Application (SPA - Single Page Application)',
+  tipoPrueba: 'End-to-End (E2E) Authentication Test',
+  framework: 'Cypress + JavaScript + Cucumber (BDD)',
+  pipeline: 'GitLab CI/CD',
+  prioridad: 'High (P1) - Critical Business Function',
+  fechaEjecucion: '2025-01-20T09:00:00',
+  ambiente: 'Testing (QA/TEST) - qa-crm.company.com',
+  progreso: 0,
+  timestamp: '2025-01-09T19:17:42.000Z',
+  exercises: '```markdown\n' +
+    '# 📝 Plan de Automatización de Pruebas - TC_AUTH_LOGIN_001\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 🔍 1. Escenario de Prueba Estructurado (ISTQB)\n' +
+    '\n' +
+    '### 🏷️ Identificación\n' +
+    '- **ID**: TC_AUTH_LOGIN_001\n' +
+    '- **Nombre**: Autenticación exitosa de usuario Sales Manager en CRM\n' +
+    '\n' +
+    '### ⚙️ Precondiciones Detalladas\n' +
+    "1. Usuario con rol 'Sales Manager' existente en BD MySQL con:\n" +
+    '   ```sql\n' +
+    "   INSERT INTO users VALUES (12345, 'testuser@company.com', '$2a$10$x...', 'Juan Pérez González', 'Sales Manager');\n" +
+    '   ```\n' +
+    '2. Ambiente QA accesible en `https://qa-crm.company.com:8080`\n' +
+    '3. Chrome v120+ configurado con:\n' +
+    '   ```json\n' +
+    '   {\n' +
+    '     "resolution": "1920x1080",\n' +
+    '     "timezone": "GMT-5",\n' +
+    '     "userAgent": "Chrome/120.0.0.0"\n' +
+    '   }\n' +
+    '   ```\n' +
+    '\n' +
+    '### 🚀 Pasos de Ejecución\n' +
+    '1. **GET** `/login` → Validar status 200 y carga de DOM completo\n' +
+    '2. **Validar UI Login**:\n' +
+    '   - Título página: "CRM Login"\n' +
+    '   - Existencia de campos: `#username`, `#password`, `#login-btn`\n' +
+    '3. **POST** `/auth` con payload:\n' +
+    '   ```json\n' +
+    '   {\n' +
+    '     "username": "testuser@company.com",\n' +
+    '     "password": "Test123!@#"\n' +
+    '   }\n' +
+    '   ```\n' +
+    '4. **Validar respuesta**:\n' +
+    '   - Status 200\n' +
+    '   - Headers: `Location: /dashboard`\n' +
+    '   - SessionStorage: `jwtToken` presente\n' +
+    '5. **Validar Dashboard**:\n' +
+    '   - Tiempo carga <5s\n' +
+    '   - Elementos críticos visibles (selectores CSS):\n' +
+    '     ```css\n' +
+    '     #nav-menu, #welcome-msg, #user-stats-widget\n' +
+    '     ```\n' +
+    '\n' +
+    '### 📊 Datos de Prueba\n' +
+    '| Campo       | Valor                   | Tipo Validación |\n' +
+    '|-------------|-------------------------|-----------------|\n' +
+    '| username    | testuser@company.com    | Regex email     |\n' +
+    '| password    | Test123!@#              | Complexidad     |\n' +
+    '\n' +
+    '### ✅ Resultado Esperado\n' +
+    '- **Funcional**:\n' +
+    '  - Redirección a `/dashboard` en ≤3s\n' +
+    '  - Mensaje bienvenida: "Bienvenido, Juan Pérez"\n' +
+    '- **Técnico**:\n' +
+    '  ```javascript\n' +
+    '  console.errors.length === 0\n' +
+    '  performance.memory.usedJSHeapSize < 50MB\n' +
+    '  ```\n' +
+    '\n' +
+    '### � Criterios de Aceptación\n' +
+    '| Área        | Métrica                     | Umbral |\n' +
+    '|-------------|-----------------------------|--------|\n' +
+    '| Rendimiento | Tiempo autenticación        | <2s    |\n' +
+    '| Seguridad   | Headers CSP                 | Presente |\n' +
+    '| UI          | Elementos críticos          | 100% visibles |\n' +
+    '\n' +
+    '### 🚪 Criterios de Salida\n' +
+    '- **Éxito**: Todos los criterios cumplidos + evidencia generada\n' +
+    '- **Fallo**: \n' +
+    '  - Errores en consola\n' +
+    '  - Tiempos excedidos\n' +
+    '  - Elementos faltantes\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 🤖 2. Estrategia de Automatización\n' +
+    '\n' +
+    '### 📈 Justificación\n' +
+    '- **ROI**: Ejecutado 15x/día (regresión + builds) → Ahorro 75h/mes\n' +
+    '- **Criticidad**: P1 - Flujo core business\n' +
+    '- **Frecuencia**: Pre-commit + nightly builds\n' +
+    '\n' +
+    '### 🏗️ Nivel de Prueba\n' +
+    '- **Pirámide**: Capa E2E (10% del portfolio de autos)\n' +
+    '- **Cobertura**: \n' +
+    '  ```mermaid\n' +
+    '  graph LR\n' +
+    '    A[UI] --> B[API Auth] --> C[DB State]\n' +
+    '  ```\n' +
+    '\n' +
+    '### 🎯 Enfoque\n' +
+    '- **Patrón**: BDD con Gherkin + Page Objects\n' +
+    '- **Técnicas**:\n' +
+    '  - Black-box para flujo UI\n' +
+    '  - Gray-box para validación JWT\n' +
+    '\n' +
+    '### ⚠️ Riesgos y Mitigación\n' +
+    '| Riesgo                     | Mitigación                          |\n' +
+    '|----------------------------|-------------------------------------|\n' +
+    '| Selectores CSS frágiles    | Usar data-test-id attributes        |\n' +
+    '| Dependencia datos BD       | Factory Bot + transactions rollback |\n' +
+    '| Timing issues              | Esperas inteligentes (Polling)      |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 💻 3. Diseño Técnico\n' +
+    '\n' +
+    '### 🛠️ Framework Justificado\n' +
+    '```mermaid\n' +
+    'graph TD\n' +
+    '  A[Cypress 12] --> B[BDD con Cucumber]\n' +
+    '  A --> C[Allure Reports]\n' +
+    '  A --> D[Axios para API checks]\n' +
+    '```\n' +
+    '\n' +
+    '**Ventajas**:\n' +
+    '- Soporte SPA out-of-the-box\n' +
+    '- Timeouts configurables\n' +
+    '- Debugging interactivo\n' +
+    '\n' +
+    '### 🏛️ Arquitectura\n' +
+    '```\n' +
+    'tests/\n' +
+    '├── features/\n' +
+    '│   └── login.feature # Gherkin\n' +
+    '├── pages/\n' +
+    '│   ├── LoginPage.js # Page Object\n' +
+    '│   └── DashboardPage.js\n' +
+    '├── step_definitions/\n' +
+    '└── support/\n' +
+    '    ├── commands.js # Custom commands\n' +
+    '    └── dbUtils.js # DB helpers\n' +
+    '```\n' +
+    '\n' +
+    '### ⚙️ Configuración Ambiente\n' +
+    '```javascript\n' +
+    '// cypress.config.js\n' +
+    'module.exports = {\n' +
+    '  env: {\n' +
+    "    baseUrl: 'https://qa-crm.company.com',\n" +
+    "    apiUrl: 'https://qa-api.company.com'\n" +
+    '  },\n' +
+    "  viewport: '1920x1080'\n" +
+    '}\n' +
+    '```\n' +
+    '\n' +
+    '### 🗃️ Gestión de Datos\n' +
+    '- **Factory Bot** para datos iniciales:\n' +
+    '  ```javascript\n' +
+    "  Factory.define('user').attrs({\n" +
+    "    email: 'testuser@company.com',\n" +
+    "    role: 'Sales Manager'\n" +
+    '  })\n' +
+    '  ```\n' +
+    '- **Hooks**:\n' +
+    '  ```gherkin\n' +
+    "  Before(() => cy.task('db:seed'));\n" +
+    "  After(() => cy.task('db:clean'));\n" +
+    '  ```\n' +
+    '\n' +
+    '### ⏱️ Sincronización\n' +
+    '- **Estrategia**:\n' +
+    '  ```javascript\n' +
+    "  cy.get('#element', { timeout: 10000 })\n" +
+    "    .should('be.visible')\n" +
+    '  ```\n' +
+    '- **Polling** para API:\n' +
+    '  ```javascript\n' +
+    '  cy.waitUntil(() => \n' +
+    "    cy.request('/api/status')\n" +
+    "      .its('body.status')\n" +
+    "      .should('eq', 'ready')\n" +
+    '  )\n' +
+    '  ```\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 🔄 4. Integración CI/CD\n' +
+    '\n' +
+    '### 📦 Pipeline GitLab\n' +
+    '```yaml\n' +
+    'stages:\n' +
+    '  - test\n' +
+    '  \n' +
+    'e2e_tests:\n' +
+    '  stage: test\n' +
+    '  image: cypress/browsers:node-18-chrome-120\n' +
+    '  script:\n' +
+    '    - npm install\n' +
+    '    - npx cypress run --env configFile=qa\n' +
+    '  artifacts:\n' +
+    '    paths:\n' +
+    '      - cypress/reports/\n' +
+    '      - cypress/screenshots/\n' +
+    '    when: always\n' +
+    '```\n' +
+    '\n' +
+    '### 🚦 Triggers\n' +
+    '- **On**: \n' +
+    '  - Merge requests a `main`\n' +
+    '  - Cron: 0 2 * * * (regresión nocturna)\n' +
+    '\n' +
+    '### 📊 Reportes\n' +
+    '- **Allure** con:\n' +
+    '  - Screenshots en fallos\n' +
+    '  - Video de ejecución\n' +
+    '  - Consola del navegador\n' +
+    '\n' +
+    '### 🔔 Notificaciones\n' +
+    '```yaml\n' +
+    'notifications:\n' +
+    '  slack:\n' +
+    "    channel: '#qa-alerts'\n" +
+    '    on_failure: always\n' +
+    '```\n' +
+    '\n' +
+    '### ↩️ Rollback\n' +
+    '- **Estrategia**: \n' +
+    '  - Bloquear despliegue si falla\n' +
+    '  - Notificar a DEV + QA Lead\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 💻 5. Código Base\n' +
+    '\n' +
+    '### 🖥️ Implementación Cypress + Cucumber\n' +
+    '\n' +
+    '**login.feature**:\n' +
+    '```gherkin\n' +
+    'Feature: Authentication\n' +
+    '  Scenario: Successful login as Sales Manager\n' +
+    '    Given I navigate to the login page\n' +
+    '    When I enter valid credentials\n' +
+    '    Then I should be redirected to dashboard\n' +
+    '```\n' +
+    '\n' +
+    '**LoginPage.js**:\n' +
+    '```javascript\n' +
+    'class LoginPage {\n' +
+    '  elements = {\n' +
+    "    username: () => cy.get('#username'),\n" +
+    "    password: () => cy.get('#password'),\n" +
+    "    loginBtn: () => cy.get('#login-btn')\n" +
+    '  }\n' +
+    '\n' +
+    '  login(username, password) {\n' +
+    '    this.elements.username().type(username)\n' +
+    '    this.elements.password().type(password)\n' +
+    '    this.elements.loginBtn().click()\n' +
+    '  }\n' +
+    '}\n' +
+    '```\n' +
+    '\n' +
+    '**steps.js**:\n' +
+    '```javascript\n' +
+    "Given('I navigate to the login page', () => {\n" +
+    "  cy.visit('/login')\n" +
+    '  cy.injectAxe() // Accessibility check\n' +
+    '})\n' +
+    '\n' +
+    "Then('I should be redirected to dashboard', () => {\n" +
+    "  cy.url().should('include', '/dashboard')\n" +
+    "  cy.window().its('sessionStorage.jwtToken').should('exist')\n" +
+    '  \n' +
+    '  // Performance check\n' +
+    '  cy.lighthouse({\n' +
+    '    performance: 90,\n' +
+    '    accessibility: 100\n' +
+    '  })\n' +
+    '})\n' +
+    '```\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 📊 6. Métricas y Monitoreo\n' +
+    '\n' +
+    '### 🎯 KPIs\n' +
+    '| Métrica                  | Objetivo |\n' +
+    '|--------------------------|----------|\n' +
+    '| Tasa éxito               | ≥98%     |\n' +
+    '| Tiempo ejecución         | <2m      |\n' +
+    '| Flakiness rate           | <1%      |\n' +
+    '\n' +
+    '### 🔍 Calidad Código\n' +
+    '- **Coverage**: 100% pasos Gherkin implementados\n' +
+    '- **Linting**: ESLint con reglas Airbnb\n' +
+    '- **Complexidad**: McCabe <5 por función\n' +
+    '\n' +
+    '### 📈 Indicadores\n' +
+    '```mermaid\n' +
+    'pie\n' +
+    '  title Estabilidad (30 días)\n' +
+    '  "Passed" : 92\n' +
+    '  "Failed" : 3\n' +
+    '  "Flaky" : 5\n' +
+    '```\n' +
+    '\n' +
+    '### ⏱️ Tiempos\n' +
+    '- **Ejecución local**: 45s\n' +
+    '- **CI/CD**: 1m 20s (con paralelización)\n' +
+    '```'
+}
