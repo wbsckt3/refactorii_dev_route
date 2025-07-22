@@ -134,7 +134,6 @@
 	`;
 
     let exercisesMarkdown = aiOutput.exercises || '';
-    exercisesMarkdown = exercisesMarkdown.replace(/```(markdown)?/g, '');
     exercisesMarkdown = exercisesMarkdown.replace(/\\n(sql|json|javascript|yaml|mermaid|gherkin)\\n/g, '\n');
 
     const fullMarkdownContent = introMarkdown + exercisesMarkdown;
