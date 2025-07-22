@@ -152,8 +152,7 @@
       ambiente: 'Testing (QA/TEST) - qa-crm.company.com',
       progreso: 0,
       timestamp: '2025-01-09T19:17:42.000Z',
-      exercises: '```markdown\n' +
-        '# 📝 Plan de Automatización de Pruebas - TC_AUTH_LOGIN_001\n' +
+      exercises: '# 📝 Plan de Automatización de Pruebas - TC_AUTH_LOGIN_001\n' +
         '\n' +
         '---\n' +
         '\n' +
@@ -165,18 +164,18 @@
         '\n' +
         '### ⚙️ Precondiciones Detalladas\n' +
         "1. Usuario con rol 'Sales Manager' existente en BD MySQL con:\n" +
-        '   ```sql\n' +
+        '   \`\`\`sql\n' +
         "   INSERT INTO users VALUES (12345, 'testuser@company.com', '$2a$10$x...', 'Juan Pérez González', 'Sales Manager');\n" +
-        '   ```\n' +
+        '   \`\`\`\n' +
         '2. Ambiente QA accesible en `https://qa-crm.company.com:8080`\n' +
         '3. Chrome v120+ configurado con:\n' +
-        '   ```json\n' +
+        '   \`\`\`json\n' +
         '   {\n' +
         '     "resolution": "1920x1080",\n' +
         '     "timezone": "GMT-5",\n' +
         '     "userAgent": "Chrome/120.0.0.0"\n' +
         '   }\n' +
-        '   ```\n' +
+        '   \`\`\`\n' +
         '\n' +
         '### 🚀 Pasos de Ejecución\n' +
         '1. **GET** `/login` → Validar status 200 y carga de DOM completo\n' +
@@ -184,12 +183,12 @@
         '   - Título página: "CRM Login"\n' +
         '   - Existencia de campos: `#username`, `#password`, `#login-btn`\n' +
         '3. **POST** `/auth` con payload:\n' +
-        '   ```json\n' +
+        '   \`\`\`json\n' +
         '   {\n' +
         '     "username": "testuser@company.com",\n' +
         '     "password": "Test123!@#"\n' +
         '   }\n' +
-        '   ```\n' +
+        '   \`\`\`\n' +
         '4. **Validar respuesta**:\n' +
         '   - Status 200\n' +
         '   - Headers: `Location: /dashboard`\n' +
@@ -197,9 +196,9 @@
         '5. **Validar Dashboard**:\n' +
         '   - Tiempo carga <5s\n' +
         '   - Elementos críticos visibles (selectores CSS):\n' +
-        '     ```css\n' +
+        '     \`\`\`css\n' +
         '     #nav-menu, #welcome-msg, #user-stats-widget\n' +
-        '     ```\n' +
+        '     \`\`\`\n' +
         '\n' +
         '### 📊 Datos de Prueba\n' +
         '| Campo       | Valor                   | Tipo Validación |\n' +
@@ -212,10 +211,10 @@
         '  - Redirección a `/dashboard` en ≤3s\n' +
         '  - Mensaje bienvenida: "Bienvenido, Juan Pérez"\n' +
         '- **Técnico**:\n' +
-        '  ```javascript\n' +
+        '  \`\`\`javascript\n' +
         '  console.errors.length === 0\n' +
         '  performance.memory.usedJSHeapSize < 50MB\n' +
-        '  ```\n' +
+        '  \`\`\`\n' +
         '\n' +
         '### 💡 Criterios de Aceptación\n' +
         '| Área        | Métrica                     | Umbral |\n' +
@@ -243,10 +242,10 @@
         '### 🏗️ Nivel de Prueba\n' +
         '- **Pirámide**: Capa E2E (10% del portfolio de autos)\n' +
         '- **Cobertura**: \n' +
-        '  ```mermaid\n' +
+        '  \`\`\`mermaid\n' +
         '  graph LR\n' +
         '    A[UI] --> B[API Auth] --> C[DB State]\n' +
-        '  ```\n' +
+        '  \`\`\`\n' +
         '\n' +
         '### 🎯 Enfoque\n' +
         '- **Patrón**: BDD con Gherkin + Page Objects\n' +
@@ -266,12 +265,12 @@
         '## 💻 3. Diseño Técnico\n' +
         '\n' +
         '### 🛠️ Framework Justificado\n' +
-        '```mermaid\n' +
+        '\`\`\`mermaid\n' +
         'graph TD\n' +
         '  A[Cypress 12] --> B[BDD con Cucumber]\n' +
         '  A --> C[Allure Reports]\n' +
         '  A --> D[Axios para API checks]\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '**Ventajas**:\n' +
         '- Soporte SPA out-of-the-box\n' +
@@ -279,7 +278,7 @@
         '- Debugging interactivo\n' +
         '\n' +
         '### 🏛️ Arquitectura\n' +
-        '```\n' +
+        '\`\`\`text\n' +
         'tests/\n' +
         '├── features/\n' +
         '│   └── login.feature # Gherkin\n' +
@@ -290,10 +289,10 @@
         '└── support/\n' +
         '    ├── commands.js # Custom commands\n' +
         '    └── dbUtils.js # DB helpers\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '### ⚙️ Configuración Ambiente\n' +
-        '```javascript\n' +
+        '\`\`\`javascript\n' +
         '// cypress.config.js\n' +
         'module.exports = {\n' +
         '  env: {\n' +
@@ -302,43 +301,43 @@
         '  },\n' +
         "  viewport: '1920x1080'\n" +
         '}\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '### 🗃️ Gestión de Datos\n' +
         '- **Factory Bot** para datos iniciales:\n' +
-        '  ```javascript\n' +
+        '  \`\`\`javascript\n' +
         "  Factory.define('user').attrs({\n" +
         "    email: 'testuser@company.com',\n" +
         "    role: 'Sales Manager'\n" +
         '  })\n' +
-        '  ```\n' +
+        '  \`\`\`\n' +
         '- **Hooks**:\n' +
-        '  ```gherkin\n' +
+        '  \`\`\`gherkin\n' +
         "  Before(() => cy.task('db:seed'));\n" +
         "  After(() => cy.task('db:clean'));\n" +
-        '  ```\n' +
+        '  \`\`\`\n' +
         '\n' +
         '### ⏱️ Sincronización\n' +
         '- **Estrategia**:\n' +
-        '  ```javascript\n' +
+        '  \`\`\`javascript\n' +
         "  cy.get('#element', { timeout: 10000 })\n" +
         "    .should('be.visible')\n" +
-        '  ```\n' +
+        '  \`\`\`\n' +
         '- **Polling** para API:\n' +
-        '  ```javascript\n' +
+        '  \`\`\`javascript\n' +
         '  cy.waitUntil(() => \n' +
         "    cy.request('/api/status')\n" +
         "      .its('body.status')\n" +
         "      .should('eq', 'ready')\n" +
         '  )\n' +
-        '  ```\n' +
+        '  \`\`\`\n' +
         '\n' +
         '---\n' +
         '\n' +
         '## 🔄 4. Integración CI/CD\n' +
         '\n' +
         '### 📦 Pipeline GitLab\n' +
-        '```yaml\n' +
+        '\`\`\`yaml\n' +
         'stages:\n' +
         '  - test\n' +
         '  \n' +
@@ -353,7 +352,7 @@
         '      - cypress/reports/\n' +
         '      - cypress/screenshots/\n' +
         '    when: always\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '### 🚦 Triggers\n' +
         '- **On**: \n' +
@@ -367,12 +366,12 @@
         '  - Consola del navegador\n' +
         '\n' +
         '### 🔔 Notificaciones\n' +
-        '```yaml\n' +
+        '\`\`\`yaml\n' +
         'notifications:\n' +
         '  slack:\n' +
         "    channel: '#qa-alerts'\n" +
         '    on_failure: always\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '### ↩️ Rollback\n' +
         '- **Estrategia**: \n' +
@@ -386,16 +385,16 @@
         '### 🖥️ Implementación Cypress + Cucumber\n' +
         '\n' +
         '**login.feature**:\n' +
-        '```gherkin\n' +
+        '\`\`\`gherkin\n' +
         'Feature: Authentication\n' +
         '  Scenario: Successful login as Sales Manager\n' +
         '    Given I navigate to the login page\n' +
         '    When I enter valid credentials\n' +
         '    Then I should be redirected to dashboard\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '**LoginPage.js**:\n' +
-        '```javascript\n' +
+        '\`\`\`javascript\n' +
         'class LoginPage {\n' +
         '  elements = {\n' +
         "    username: () => cy.get('#username'),\n" +
@@ -409,10 +408,10 @@
         '    this.elements.loginBtn().click()\n' +
         '  }\n' +
         '}\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '**steps.js**:\n' +
-        '```javascript\n' +
+        '\`\`\`javascript\n' +
         "Given('I navigate to the login page', () => {\n" +
         "  cy.visit('/login')\n" +
         '  cy.injectAxe() // Accessibility check\n' +
@@ -428,7 +427,7 @@
         '    accessibility: 100\n' +
         '  })\n' +
         '})\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '---\n' +
         '\n' +
@@ -447,18 +446,19 @@
         '- **Complexidad**: McCabe <5 por función\n' +
         '\n' +
         '### 📈 Indicadores\n' +
-        '```mermaid\n' +
+        '\`\`\`mermaid\n' +
         'pie\n' +
         '  title Estabilidad (30 días)\n' +
         '  "Passed" : 92\n' +
         '  "Failed" : 3\n' +
         '  "Flaky" : 5\n' +
-        '```\n' +
+        '\`\`\`\n' +
         '\n' +
         '### ⏱️ Tiempos\n' +
         '- **Ejecución local**: 45s\n' +
         '- **CI/CD**: 1m 20s (con paralelización)\n' +
-        '```'
+        '\`\`\`text\n' +
+        '\`\`\`'
     };
 
     document.addEventListener('DOMContentLoaded', () => {
