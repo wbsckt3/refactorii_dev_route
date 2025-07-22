@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Visor de Plan de Pruebas</title>
+<!-- Marked.js para convertir Markdown a HTML -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- Mermaid.js para renderizar diagramas -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<style>
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+    background-color: #f9f9f9;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #2c3e50;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  h1 { font-size: 2.2em; border-bottom: 2px solid #eee; padding-bottom: 0.3em; }
+  h2 { font-size: 1.8em; }
+  h3 { font-size: 1.4em; }
+  p { margin-bottom: 1em; }
+  ul, ol {
+    margin-bottom: 1em;
+    padding-left: 20px;
+  }
+  li { margin-bottom: 0.5em; }
+  pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 1em;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin-bottom: 1em;
+  }
+  code {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    background-color: #e0e0e0;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    color: #c7254e;
+  }
+  pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  .mermaid {
+    background-color: #fff;
+    padding: 1em;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .header-icon {
+    margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+<div id="markdown-output"></div>
+
+<script>
+  // El objeto completo devuelto por la IA
+  const aiOutput = {
+    id: 1,
+    nombre: 'Plan_Automatizacion_Login_001',
+    testId: 'TC_AUTH_LOGIN_001',
+    objetivo: 'Verificar que un usuario registrado puede autenticarse exitosamente en el sistema CRM utilizando credenciales válidas, validando la funcionalidad de login, redirección al dashboard principal y carga correcta de los elementos de la interfaz de usuario según los requisitos funcionales RF-001 y RF-002.',
+    precondiciones: "- Usuario con rol 'Sales Manager' registrado en base de datos (email: testuser@company.com, password: Test123!@#)\\n" +
+      '- Base de datos MySQL en estado limpio con datos de prueba cargados\\n' +
+      '- Servidor de aplicación en ambiente QA ejecutándose en puerto 8080\\n' +
+      '- Navegador Chrome versión 120+ instalado y configurado\\n' +
+      '- Conexión de red estable (latencia < 100ms)\\n' +
+      '- Certificados SSL válidos configurados\\n' +
+      '- Session storage y cookies habilitadas en navegador',
+    pasos: '1. Abrir navegador Chrome y navegar a https://qa-crm.company.com/login\\n' +
+      '2. Verificar que la página de login se carga completamente (título, formulario, botones)\\n' +
+      "3. Ingresar email válido en campo 'username': testuser@company.com\\n" +
+      "4. Ingresar contraseña válida en campo 'password': Test123!@#\\n" +
+      "5. Hacer clic en botón 'Iniciar Sesión' (id='login-btn')\\n" +
+      '6. Esperar redirección automática (máximo 3 segundos)\\n' +
+      '7. Verificar carga completa del dashboard principal\\n' +
+      '8. Validar elementos UI críticos: menú navegación, widget bienvenida, datos usuario\\n' +
+      '9. Verificar ausencia de errores JavaScript en consola del navegador',
+    datosPrueba: 'DATOS VÁLIDOS:\\n' +
+      '- Email: testuser@company.com\\n' +
+      '- Password: Test123!@#\\n' +
+      '- Rol esperado: Sales Manager\\n' +
+      '- ID Usuario: 12345\\n' +
+      '- Nombre completo: Juan Pérez González\\n' +
+      '\\n' +
+      'DATA SET ADICIONAL:\\n' +
+      '- URL Base: https://qa-crm.company.com\\n' +
+      '- Timeout máximo: 30 segundos\\n' +
+      '- User-Agent: Chrome/120.0.0.0\\n' +
+      '- Resolución pantalla: 1920x1080\\n' +
+      '- Zona horaria: GMT-5',
+    resultadoEsperado: '- HTTP Status Code 200 en respuesta de autenticación\\n' +
+      '- Redirección exitosa a /dashboard en máximo 3 segundos\\n' +
+      '- Token JWT válido almacenado en sessionStorage\\n' +
+      "- Mensaje de bienvenida visible: 'Bienvenido, Juan Pérez'\\n" +
+      '- Menú principal cargado con opciones: Clientes, Ventas, Reportes, Configuración\\n' +
+      '- Widget de estadísticas personales visible con datos actualizados\\n' +
+      '- Footer con información de sesión: fecha/hora último acceso\\n' +
+      '- URL final: https://qa-crm.company.com/dashboard\\n' +
+      "- Título de página: 'CRM Dashboard - Sales Manager'",
+    criteriosAceptacion: 'FUNCIONALES:\\n' +
+      '- Tiempo de respuesta de autenticación < 2 segundos\\n' +
+      '- Tiempo total de carga del dashboard < 5 segundos\\n' +
+      '- Todos los elementos críticos de UI visibles y funcionales\\n' +
+      '- Datos de usuario correctos mostrados en interfaz\\n' +
+      '\\n' +
+      'TÉCNICOS:\\n' +
+      '- Sin errores JavaScript en consola del navegador\\n' +
+      '- Sin errores HTTP 4xx o 5xx en Network tab\\n' +
+      '- Memoria utilizada por página < 50MB\\n' +
+      '- CPU usage durante carga < 80%\\n' +
+      '\\n' +
+      'SEGURIDAD:\\n' +
+      '- Token de sesión generado y almacenado correctamente\\n' +
+      '- Headers de seguridad presentes (X-Frame-Options, CSP)\\n' +
+      '- Contraseña no visible en logs o network requests',
+    tipoAplicacion: 'Web Application (SPA - Single Page Application)',
+    tipoPrueba: 'End-to-End (E2E) Authentication Test',
+    framework: 'Cypress + JavaScript + Cucumber (BDD)',
+    pipeline: 'GitLab CI/CD',
+    prioridad: 'High (P1) - Critical Business Function',
+    fechaEjecucion: '2025-01-20T09:00:00',
+    ambiente: 'Testing (QA/TEST) - qa-crm.company.com',
+    progreso: 0,
+    timestamp: '2025-01-09T19:17:42.000Z',
+    exercises: '# 📝 Plan de Automatización de Pruebas - TC_AUTH_LOGIN_001\\n' +
+      '\\n' +
+      '---\\n' +
+      '\\n' +
+      '## 🔍 1. Escenario de Prueba Estructurado (ISTQB)\\n' +
+      '\\n' +
+      '### 🏷️ Identificación\\n' +
+      '- **ID**: TC_AUTH_LOGIN_001\\n' +
+      '- **Nombre**: Autenticación exitosa de usuario Sales Manager en CRM\\n' +
+      '\\n' +
+      '### ⚙️ Precondiciones Detalladas\\n' +
+      "1. Usuario con rol 'Sales Manager' existente en BD MySQL con:\\n" +
+      '   ```sql\\n' +
+      "   INSERT INTO users VALUES (12345, 'testuser@company.com', '$2a$10$x...', 'Juan Pérez González', 'Sales Manager');\\n" +
+      '   ```\\n' +
+      '2. Ambiente QA accesible en `https://qa-crm.company.com:8080`\\n' +
+      '3. Chrome v120+ configurado con:\\n' +
+      '   ```json\\n' +
+      '   {\\n' +
+      '     "resolution": "1920x1080",\\n' +
+      '     "timezone": "GMT-5",\\n' +
+      '     "userAgent": "Chrome/120.0.0.0"\\n' +
+      '   }\\n' +
+      '   ```\\n' +
+      '\\n' +
+      '### 🚀 Pasos de Ejecución\\n' +
+      '1. **GET** `/login` → Validar status 200 y carga de DOM completo\\n' +
+      '2. **Validar UI Login**:\\n' +
+      '   - Título página: "CRM Login"\\n' +
+      '   - Existencia de campos: `#username`, `#password`, `#login-btn`\\n' +
+      '3. **POST** `/auth` con payload:\\n' +
+      '   ```json\\n' +
+      '   {\\n' +
+      '     "username": "testuser@company.com",\\n' +
+      '     "password": "Test123!@#\\"\\n' +
+      '   }\\n' +
+      '   ```\\n' +
+      '4. **Validar respuesta**:\\n' +
+      '   - Status 200\\n' +
+      '   - Headers: `Location: /dashboard`\\n' +
+      '   - SessionStorage: `jwtToken` presente\\n' +
+      '5. **Validar Dashboard**:\\n' +
+      '   - Tiempo carga <5s\\n' +
+      '   - Elementos críticos visibles (selectores CSS):\\n' +
+      '     ```css\\n' +
+      '     #nav-menu, #welcome-msg, #user-stats-widget\\n' +
+      '     ```\\n' +
+      '\\n' +
+      '### 📊 Datos de Prueba\\n' +
+      '| Campo       | Valor                   | Tipo Validación |\\n' +
+      '|-------------|-------------------------|-----------------|\\n' +
+      '| username    | testuser@company.com    | Regex email     |\\n' +
+      '| password    | Test123!@#              | Complexidad     |\\n' +
+      '\\n' +
+      '### ✅ Resultado Esperado\\n' +
+      '- **Funcional**:\\n' +
+      '  - Redirección a `/dashboard` en ≤3s\\n' +
+      '  - Mensaje bienvenida: "Bienvenido, Juan Pérez"\\n' +
+      '- **Técnico**:\\n' +
+      '  ```javascript\\n' +
+      '  console.errors.length === 0\\n' +
+      '  performance.memory.usedJSHeapSize < 50MB\\n' +
+      '  ```\\n' +
+      '\\n' +
+      '### 💡 Criterios de Aceptación\\n' +
+      '| Área        | Métrica                     | Umbral |\\n' +
+      '|-------------|-----------------------------|--------|\\n' +
+      '| Rendimiento | Tiempo autenticación        | <2s    |\\n' +
+      '| Seguridad   | Headers CSP                 | Presente |\\n' +
+      '| UI          | Elementos críticos          | 100% visibles |\\n' +
+      '\\n' +
+      '### 🚪 Criterios de Salida\\n' +
+      '- **Éxito**: Todos los criterios cumplidos + evidencia generada\\n' +
+      '- **Fallo**: \\n' +
+      '  - Errores en consola\\n' +
+      '  - Tiempos excedidos\\n' +
+      '  - Elementos faltantes\\n' +
+      '\\n' +
+      '---\\n' +
+      '\\n' +
+      '## 🤖 2. Estrategia de Automatización\\n' +
+      '\\n' +
+      '### 📈 Justificación\\n' +
+      '- **ROI**: Ejecutado 15x/día (regresión + builds) → Ahorro 75h/mes\\n' +
+      '- **Criticidad**: P1 - Flujo core business\\n' +
+      '- **Frecuencia**: Pre-commit + nightly builds\\n' +
+      '\\n' +
+      '### 🏗️ Nivel de Prueba\\n' +
+      '- **Pirámide**: Capa E2E (10% del portfolio de autos)\\n' +
+      '- **Cobertura**: \\n' +
+      '  ```mermaid\\n' +
+      '  graph LR\\n' +
+      '    A[UI] --> B[API Auth] --> C[DB State]\\n' +
+      '  ```\\n' +
+      '\\n' +
+      '### 🎯 Enfoque\\n' +
+      '- **Patrón**: BDD con Gherkin + Page Objects\\n' +
+      '- **Técnicas**:\\n' +
+      '  - Black-box para flujo UI\\n' +
+      '  - Gray-box para validación JWT\\n' +
+      '\\n' +
+      '### ⚠️ Riesgos y Mitigación\\n' +
+      '| Riesgo                     | Mitigación                          |\\n' +
+      '|----------------------------|-------------------------------------|\\n' +
+      '| Selectores CSS frágiles    | Usar data-test-id attributes        |\\n' +
+      '| Dependencia datos BD       | Factory Bot + transactions rollback |\\n' +
+      '| Timing issues              | Esperas inteligentes (Polling)      |\\n' +
+      '\\n' +
+      '---\\n' +
+      '\\n' +
+      '## 💻 3. Diseño Técnico\\n' +
+      '\\n' +
+      '### 🛠️ Framework Justificado\\n' +
+      '```mermaid\\n' +
+      'graph TD\\n' +
+      '  A[Cypress 12] --> B[BDD con Cucumber]\\n' +
+      '  A --> C[Allure Reports]\\n' +
+      '  A --> D[Axios para API checks]\\n' +
+      '```\\n' +
+      '\\n' +
+      '**Ventajas**:\\n' +
+      '- Soporte SPA out-of-the-box\\n' +
+      '- Timeouts configurables\\n' +
+      '- Debugging interactivo\\n' +
+      '\\n' +
+      '### 🏛️ Arquitectura\\n' +
+      '```text\\n' +
+      'tests/\\n' +
+      '├── features/\\n' +
+      '│   └── login.feature # Gherkin\\n' +
+      '├── pages/\\n' +
+      '│   ├── LoginPage.js # Page Object\\n' +
+      '│   └── DashboardPage.js\\n' +
+      '├── step_definitions/\\n' +
+      '└── support/\\n' +
+      '    ├── commands.js # Custom commands\\n' +
+      '    └── dbUtils.js # DB helpers\\n' +
+      '```\\n' +
+      '\\n' +
+      '### ⚙️ Configuración Ambiente\\n' +
+      '```javascript\\n' +
+      '// cypress.config.js\\n' +
+      'module.exports = {\\n' +
+      '  env: {\\n' +
+      "    baseUrl: 'https://qa-crm.company.com',\\n" +
+      "    apiUrl: 'https://qa-api.company.com'\\n" +
+      '  },\\n' +
+      "  viewport: '1920x1080'\\n" +
+      '}\\n' +
+      '```\\n' +
+      '\\n' +
+      '### 🗃️ Gestión de Datos\\n' +
+      '- **Factory Bot** para datos iniciales:\\n' +
+      '  ```javascript\\n' +
+      "  Factory.define('user').attrs({\\n" +
+      "    email: 'testuser@company.com',\\n" +
+      "    role: 'Sales Manager'\\n" +
+      '  })\\n' +
+      '  ```\\n' +
+      '- **Hooks**:\\n' +
+      '  ```gherkin\\n' +
+      "  Before(() => cy.task('db:seed'));\\n" +
+      "  After(() => cy.task('db:clean'));\\n" +
+      '  ```\\n' +
+      '\\n' +
+      '### ⏱️ Sincronización\\n' +
+      '- **Estrategia**:\\n' +
+      '  ```javascript\\n' +
+      "  cy.get('#element', { timeout: 10000 })\\n" +
+      "    .should('be.visible')\\n" +
+      '  ```\\n' +
+      '- **Polling** para API:\\n' +
+      '  ```javascript\\n' +
+      '  cy.waitUntil(() => \\n' +
+      "    cy.request('/api/status')\\n" +
+      "      .its('body.status')\\n" +
+      "      .should('eq', 'ready')\\n" +
+      '  )\\n' +
+      '  ```\\n' +
+      '\\n' +
+      '---\\n' +
+      '\\n' +
+      '## 🔄 4. Integración CI/CD\\n' +
+      '\\n' +
+      '### 📦 Pipeline GitLab\\n' +
+      '```yaml\\n' +
+      'stages:\\n' +
+      '  - test\\n' +
+      '  \\n' +
+      'e2e_tests:\\n' +
+      '  stage: test\\n' +
+      '  image: cypress/browsers:node-18-chrome-120\\n' +
+      '  script:\\n' +
+      '    - npm install\\n' +
+      '    - npx cypress run --env configFile=qa\\n' +
+      '  artifacts:\\n' +
+      '    paths:\\n' +
+      '      - cypress/reports/\\n' +
+      '      - cypress/screenshots/\\n' +
+      '    when: always\\n' +
+      '```\\n' +
+      '\\n' +
+      '### 🚦 Triggers\\n' +
+      '- **On**: \\n' +
+      '  - Merge requests a `main`\\n' +
+      '  - Cron: 0 2 * * * (regresión nocturna)\\n' +
+      '\\n' +
+      '### 📊 Reportes\\n' +
+      '- **Allure** con:\\n' +
+      '  - Screenshots en fallos\\n' +
+      '  - Video de ejecución\\n' +
+      '  - Consola del navegador\\n' +
+      '\\n' +
+      '### 🔔 Notificaciones\\n' +
+      '```yaml\\n' +
+      'notifications:\\n' +
+      '  slack:\\n' +
+      "    channel: '#qa-alerts'\\n" +
+      '    on_failure: always\\n' +
+      '```\\n' +
+      '\\n' +
+      '### ↩️ Rollback\\n' +
+      '- **Estrategia**: \\n' +
+      '  - Bloquear despliegue si falla\\n' +
+      '  - Notificar a DEV + QA Lead\\n' +
+      '\\n' +
+      '---\\n' +
+      '\\n' +
+      '## 💻 5. Código Base\\n' +
+      '\\n' +
+      '### 🖥️ Implementación Cypress + Cucumber\\n' +
+      '\\n' +
+      '**login.feature**:\\n' +
+      '```gherkin\\n' +
+      'Feature: Authentication\\n' +
+      '  Scenario: Successful login as Sales Manager\\n' +
+      '    Given I navigate to the login page\\n' +
+      '    When I enter valid credentials\\n' +
+      '    Then I should be redirected to dashboard\\n' +
+      '```\\n' +
+      '\\n' +
+      '**LoginPage.js**:\\n' +
+      '```javascript\\n' +
+      'class LoginPage {\\n' +
+      '  elements = {\\n' +
+      "    username: () => cy.get('#username'),\\n" +
+      "    password: () => cy.get('#password'),\\n" +
+      "    loginBtn: () => cy.get('#login-btn')\\n" +
+      '  }\\n' +
+      '\\n' +
+      '  login(username, password) {\\n' +
+      '    this.elements.username().type(username)\\n' +
+      '    this.elements.password().type(password)\\n' +
+      '    this.elements.loginBtn().click()\\n' +
+      '  }\\n' +
+      '}\\n' +
+      '```\\n' +
+      '\\n' +
+      '**steps.js**:\\n' +
+      '```javascript\\n' +
+      "Given('I navigate to the login page', () => {\\n" +
+      "  cy.visit('/login')\\n" +
+      '  cy.injectAxe() // Accessibility check\\n' +
+      '})\\n' +
+      '\\n' +
+      "Then('I should be redirected to dashboard', () => {\\n" +
+      "  cy.url().should('include', '/dashboard')\\n" +
+      "  cy.window().its('sessionStorage.jwtToken').should('exist')\\n" +
+      '  \\n' +
+      '  // Performance check\\n' +
+      '  cy.lighthouse({\\n' +
+      '    performance: 90,\\n' +
+      '    accessibility: 100\\n' +
+      '  })\\n' +
+      '})\\n' +
+      '```\\n' +
+      '\\n' +
+      '---\\n' +
+      '\\n' +
+      '## 📊 6. Métricas y Monitoreo\\n' +
+      '\\n' +
+      '### 🎯 KPIs\\n' +
+      '| Métrica                  | Objetivo |\\n' +
+      '|--------------------------|----------|\\n' +
+      '| Tasa éxito               | ≥98%     |\\n' +
+      '| Tiempo ejecución         | <2m      |\\n' +
+      '| Flakiness rate           | <1%      |\\n' +
+      '\\n' +
+      '### 🔍 Calidad Código\\n' +
+      '- **Coverage**: 100% pasos Gherkin implementados\\n' +
+      '- **Linting**: ESLint con reglas Airbnb\\n' +
+      '- **Complexidad**: McCabe <5 por función\\n' +
+      '\\n' +
+      '### 📈 Indicadores\\n' +
+      '```mermaid\\n' +
+      'pie\\n' +
+      '  title Estabilidad (30 días)\\n' +
+      '  "Passed" : 92\\n' +
+      '  "Failed" : 3\\n' +
+      '  "Flaky" : 5\\n' +
+      '```\\n' +
+      '\\n' +
+      '### ⏱️ Tiempos\\n' +
+      '- **Ejecución local**: 45s\\n' +
+      '- **CI/CD**: 1m 20s (con paralelización)\\n' +
+      '```'
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const markdownOutputDiv = document.getElementById('markdown-output');
+    const exercisesMarkdown = aiOutput.exercises;
+
+    // Configure marked.js to handle code blocks and Mermaid diagrams
+    marked.setOptions({
+      highlight: function(code, lang) {
+        // For Mermaid diagrams, just return the code as is,
+        // Mermaid.js will process it later.
+        if (lang === 'mermaid') {
+          return code;
+        }
+        // For other languages, you might use a syntax highlighter like highlight.js
+        // For this example, we'll just return the code as is.
+        return code;
+      },
+      langPrefix: 'language-', // For syntax highlighting libraries
+      gfm: true, // Enable GitHub Flavored Markdown
+      breaks: true // Enable GFM line breaks
+    });
+
+    // Custom renderer to add specific classes or modify elements if needed
+    const renderer = new marked.Renderer();
+
+    // Override heading rendering to add icons (optional, based on your markdown)
+    renderer.heading = function (text, level, raw) {
+      let icon = '';
+      if (level === 1) icon = '📝'; // Plan
+      if (level === 2) {
+        if (text.includes('Escenario de Prueba')) icon = '🔍';
+        else if (text.includes('Estrategia de Automatización')) icon = '🤖';
+        else if (text.includes('Diseño Técnico')) icon = '💻';
+        else if (text.includes('Integración CI/CD')) icon = '🔄';
+        else if (text.includes('Código Base')) icon = '🖥️';
+        else if (text.includes('Métricas y Monitoreo')) icon = '📊';
+      }
+      if (level === 3) {
+        if (text.includes('Identificación')) icon = '🏷️';
+        else if (text.includes('Precondiciones')) icon = '⚙️';
+        else if (text.includes('Pasos de Ejecución')) icon = '🚀';
+        else if (text.includes('Datos de Prueba')) icon = '📊';
+        else if (text.includes('Resultado Esperado')) icon = '✅';
+        else if (text.includes('Criterios de Aceptación')) icon = '💡';
+        else if (text.includes('Criterios de Salida')) icon = '🚪';
+        else if (text.includes('Justificación')) icon = '📈';
+        else if (text.includes('Nivel de Prueba')) icon = '🏗️';
+        else if (text.includes('Enfoque')) icon = '🎯';
+        else if (text.includes('Riesgos y Mitigación')) icon = '⚠️';
+        else if (text.includes('Framework Justificado')) icon = '🛠️';
+        else if (text.includes('Arquitectura')) icon = '🏛️';
+        else if (text.includes('Configuración Ambiente')) icon = '⚙️';
+        else if (text.includes('Gestión de Datos')) icon = '🗃️';
+        else if (text.includes('Sincronización')) icon = '⏱️';
+        else if (text.includes('Pipeline GitLab')) icon = '📦';
+        else if (text.includes('Triggers')) icon = '🚦';
+        else if (text.includes('Reportes')) icon = '📊';
+        else if (text.includes('Notificaciones')) icon = '🔔';
+        else if (text.includes('Rollback')) icon = '↩️';
+        else if (text.includes('KPIs')) icon = '🎯';
+        else if (text.includes('Calidad Código')) icon = '🔍';
+        else if (text.includes('Indicadores')) icon = '📈';
+        else if (text.includes('Tiempos')) icon = '⏱️';
+      }
+      return `<h${level}><span class="header-icon">${icon}</span>${text}</h${level}>`;
+    };
+
+    // Convert markdown to HTML
+    const htmlContent = marked.parse(exercisesMarkdown, { renderer: renderer });
+    markdownOutputDiv.innerHTML = htmlContent;
+
+    // Initialize Mermaid.js after the content is in the DOM
+    // It will look for elements with class 'mermaid' or 'language-mermaid'
+    mermaid.initialize({ startOnLoad: true });
+  });
+</script>
+</body>
+</html>
