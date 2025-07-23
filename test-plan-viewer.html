@@ -96,7 +96,7 @@
       });
   }); */
 
-   /*document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
 	  const params = new URLSearchParams(window.location.search);
 	  const rutaId = params.get('rutaId');
 	  const token = params.get('token');
@@ -251,48 +251,7 @@
       // Initialize Mermaid.js after the content is in the DOM
       // It will look for elements with class 'mermaid' or 'language-mermaid'
       mermaid.initialize({ startOnLoad: true });
-    }); */
-
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(window.location.search);
-  const rutaId = params.get('rutaId');
-  const token = params.get('token');
-  const userEmail = params.get('email');
-
-  if (!rutaId || !userEmail) {
-    console.error('Falta rutaId o userEmail en la URL');
-    return;
-  }
-
-  try {
-    const response = await fetch(`https://www.refactorii.com/api/tenant/workflow/planeador_de_automatizacion_ISTQB/verifyExercisesInPath`, {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-        'x-user-email': userEmail.toLowerCase().trim(),
-        'x-path-id': String(rutaId)
-      }
-    });
-
-    if (!response.ok) {
-      console.error(`Error HTTP ${response.status} al obtener ejercicios de la ruta ${rutaId}`);
-      return;
-    }
-
-    const data = await response.json();
-    const ejercicios = data?.ruta?.exercises;
-
-    if (typeof ejercicios === 'string' && ejercicios.trim().length > 0) {
-      renderMarkdownFromAIOutput(ejercicios);
-    } else {
-      console.warn('No se encontraron ejercicios válidos');
-    }
-
-  } catch (error) {
-    console.error('Error al cargar ejercicios desde backend:', error);
-  }
-});
+    }); 
 
 
 	  
