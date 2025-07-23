@@ -297,10 +297,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 function renderMarkdownFromAIOutput(markdownString) {
   const markdownOutputDiv = document.getElementById('markdown-output');
 
-  // Limpieza de escape innecesario
-  markdownString = markdownString.replace(/\\n(sql|json|javascript|yaml|mermaid|gherkin)\\n/g, '\n');
+  // 💥 QUITAR backticks externos tipo ```markdown\n...\n```
+  const cleanedMarkdown = markdownString
+    .trim()
+    .replace(/^```(?:markdown)?\n?/, '')   // elimina apertura ```markdown o ```
+    .replace(/\n?```$/, '');               // elimina cierre ```
 
-  // Configuración de marked y el renderer custom con íconos
+  // Renderer custom con íconos
   const renderer = new marked.Renderer();
 
   renderer.heading = function (text, level) {
@@ -356,10 +359,11 @@ function renderMarkdownFromAIOutput(markdownString) {
     breaks: true
   });
 
-  const htmlContent = marked.parse(markdownString, { renderer });
+  // 🔥 Ahora sí: parse limpio sin el bloque global
+  const htmlContent = marked.parse(cleanedMarkdown, { renderer });
   markdownOutputDiv.innerHTML = htmlContent;
 
-  // Inicializar mermaid una vez renderizado el contenido
+  // Reprocesar mermaid
   mermaid.initialize({ startOnLoad: true });
 }
 	  
