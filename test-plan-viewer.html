@@ -85,7 +85,7 @@
   <div id="markdown-output"></div>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  /*document.addEventListener('DOMContentLoaded', () => {
     fetch('plan.json')
       .then(response => response.json())
       .then(aiOutput => {
@@ -94,6 +94,50 @@
       .catch(error => {
         console.error('Error al cargar plan.json:', error);
       });
+  }); */
+
+   document.addEventListener('DOMContentLoaded', async () => {
+	  const params = new URLSearchParams(window.location.search);
+	  const rutaId = params.get('rutaId');
+	  const token = params.get('token');
+	  const formDataRaw = localStorage.getItem('formData');
+	
+	  if (!rutaId || !formDataRaw) {
+	    console.error('Falta rutaId o formData en localStorage');
+	    return;
+	  }
+	
+	  const formData = JSON.parse(formDataRaw);
+	  const userEmail = formData.Email;
+	
+	  try {
+	    const response = await fetch(`https://www.refactorii.com/api/tenant/workflow/planeador_de_automatizacion_ISTQB/verifyExercisesInPath`, {
+	      method: "GET",
+	      headers: {
+	        'Content-Type': 'application/json',
+	        'x-user-email': userEmail.toLowerCase().trim(),
+	        'x-path-id': String(rutaId)
+	      }
+	    });
+	
+	    if (!response.ok) {
+	      console.error(`Error HTTP ${response.status} al obtener ejercicios de la ruta ${rutaId}`);
+	      return;
+	    }
+	
+	    const data = await response.json();
+	    const ejercicios = data?.ruta?.exercises;
+	
+	    if (typeof ejercicios === 'string' && ejercicios.trim().length > 0) {
+	      // Aquí reemplazas plan.json por lo que viene de backend
+	      renderMarkdownFromAIOutput(ejercicios);
+	    } else {
+	      console.warn('No se encontraron ejercicios válidos');
+	    }
+	
+	  } catch (error) {
+	    console.error('Error al cargar ejercicios desde backend:', error);
+	  }
   });
 
   function renderMarkdownFromAIOutput(aiOutput) {
