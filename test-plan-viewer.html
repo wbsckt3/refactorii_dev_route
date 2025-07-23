@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-  function renderMarkdownFromAIOutput(aiOutput) {
+function renderMarkdownFromAIOutput(aiOutput) {
   const markdownOutputDiv = document.getElementById('markdown-output');
 
   const introMarkdown = `
@@ -153,15 +153,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 - **Timestamp**: ${aiOutput.timestamp || 'N/A'}
 
 ---
-
 `;
 
   let exercisesMarkdown = aiOutput.exercises || '';
 
-  // Detecta bloques de código que vengan como texto plano e inserta etiquetas Markdown
+  // Limpieza mínima: reemplaza \n y \t escapados
   exercisesMarkdown = exercisesMarkdown
-    .replace(/\\n(g?json|sql|yaml|javascript|mermaid|gherkin)\\n/g, '\n```$1\n')
-    .replace(/\\n\\n/g, '\n');
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t');
 
   const fullMarkdownContent = introMarkdown + exercisesMarkdown;
 
@@ -170,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (lang && hljs.getLanguage(lang)) {
         return hljs.highlight(code, { language: lang }).value;
       }
-      return code; // fallback sin highlight
+      return code;
     },
     langPrefix: 'language-',
     gfm: true,
@@ -180,7 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const htmlContent = marked.parse(fullMarkdownContent);
   markdownOutputDiv.innerHTML = htmlContent;
 
-  // Procesar bloques Mermaid
+  // Procesar bloques Mermaid si los hay
   const mermaidBlocks = markdownOutputDiv.querySelectorAll('code.language-mermaid');
   if (mermaidBlocks.length > 0) {
     mermaid.initialize({ startOnLoad: false });
