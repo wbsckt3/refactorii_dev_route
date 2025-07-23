@@ -294,78 +294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-function renderMarkdownFromAIOutput(markdownString) {
-  const markdownOutputDiv = document.getElementById('markdown-output');
 
-  // 💥 QUITAR backticks externos tipo ```markdown\n...\n```
-  const cleanedMarkdown = markdownString
-    .trim()
-    .replace(/^```(?:markdown)?\n?/, '')   // elimina apertura ```markdown o ```
-    .replace(/\n?```$/, '');               // elimina cierre ```
-
-  // Renderer custom con íconos
-  const renderer = new marked.Renderer();
-
-  renderer.heading = function (text, level) {
-    let icon = '';
-    if (level === 1) icon = '📝';
-    if (level === 2) {
-      if (text.includes('Escenario de Prueba')) icon = '🔍';
-      else if (text.includes('Estrategia de Automatización')) icon = '🤖';
-      else if (text.includes('Diseño Técnico')) icon = '💻';
-      else if (text.includes('Integración CI/CD')) icon = '🔄';
-      else if (text.includes('Código Base')) icon = '🖥️';
-      else if (text.includes('Métricas y Monitoreo')) icon = '📊';
-    }
-    if (level === 3) {
-      if (text.includes('Identificación')) icon = '🏷️';
-      else if (text.includes('Precondiciones')) icon = '⚙️';
-      else if (text.includes('Pasos de Ejecución')) icon = '🚀';
-      else if (text.includes('Datos de Prueba')) icon = '📊';
-      else if (text.includes('Resultado Esperado')) icon = '✅';
-      else if (text.includes('Criterios de Aceptación')) icon = '💡';
-      else if (text.includes('Criterios de Salida')) icon = '🚪';
-      else if (text.includes('Justificación')) icon = '📈';
-      else if (text.includes('Nivel de Prueba')) icon = '🏗️';
-      else if (text.includes('Enfoque')) icon = '🎯';
-      else if (text.includes('Riesgos y Mitigación')) icon = '⚠️';
-      else if (text.includes('Framework Justificado')) icon = '🛠️';
-      else if (text.includes('Arquitectura')) icon = '🏛️';
-      else if (text.includes('Configuración Ambiente')) icon = '⚙️';
-      else if (text.includes('Gestión de Datos')) icon = '🗃️';
-      else if (text.includes('Sincronización')) icon = '⏱️';
-      else if (text.includes('Pipeline GitLab')) icon = '📦';
-      else if (text.includes('Triggers')) icon = '🚦';
-      else if (text.includes('Reportes')) icon = '📊';
-      else if (text.includes('Notificaciones')) icon = '🔔';
-      else if (text.includes('Rollback')) icon = '↩️';
-      else if (text.includes('KPIs')) icon = '🎯';
-      else if (text.includes('Calidad Código')) icon = '🔍';
-      else if (text.includes('Indicadores')) icon = '📈';
-      else if (text.includes('Tiempos')) icon = '⏱️';
-    }
-    return `<h${level}><span class="header-icon">${icon}</span>${text}</h${level}>`;
-  };
-
-  marked.setOptions({
-    highlight: function(code, lang) {
-      if (lang && hljs.getLanguage(lang)) {
-        return hljs.highlight(code, { language: lang }).value;
-      }
-      return code;
-    },
-    langPrefix: 'language-',
-    gfm: true,
-    breaks: true
-  });
-
-  // 🔥 Ahora sí: parse limpio sin el bloque global
-  const htmlContent = marked.parse(cleanedMarkdown, { renderer });
-  markdownOutputDiv.innerHTML = htmlContent;
-
-  // Reprocesar mermaid
-  mermaid.initialize({ startOnLoad: true });
-}
 	  
   </script>
 </body>
