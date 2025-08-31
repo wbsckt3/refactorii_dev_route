@@ -123,7 +123,7 @@
   <div id="markdown-output"></div>
 
   <script>
-
+/*
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const rutaId = params.get('rutaId');
@@ -163,69 +163,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Error al cargar ejercicios desde backend:', error);
   }
 });
-
-/*function renderMarkdownFromAIOutput(aiOutput) {
-  const markdownOutputDiv = document.getElementById('markdown-output');
-
-  const introMarkdown = `
-## 🧪 Plan de Automatización
-
-- **Tipo de Aplicación**: ${aiOutput.tipoAplicacion || 'N/A'}
-- **Tipo de Prueba**: ${aiOutput.tipoPrueba || 'N/A'}
-- **Framework**: ${aiOutput.framework || 'N/A'}
-- **Pipeline**: ${aiOutput.pipeline || 'N/A'}
-- **Prioridad**: ${aiOutput.prioridad || 'N/A'}
-- **Fecha de Ejecución**: ${aiOutput.fechaEjecucion || 'N/A'}
-- **Ambiente**: ${aiOutput.ambiente || 'N/A'}
-- **Progreso**: ${aiOutput.progreso ?? '0'}
-- **Timestamp**: ${aiOutput.timestamp || 'N/A'}
-
----
-`;
-
-  let exercisesMarkdown = aiOutput.exercises || '';
-
-  // Limpieza mínima: reemplaza \n y \t escapados
-  exercisesMarkdown = exercisesMarkdown
-    .replace(/\\n/g, '\n')
-    .replace(/\\t/g, '\t');
-
-  const fullMarkdownContent = introMarkdown + exercisesMarkdown;
-
-  marked.setOptions({
-    highlight: function(code, lang) {
-      if (lang && hljs.getLanguage(lang)) {
-        return hljs.highlight(code, { language: lang }).value;
-      }
-      return code;
-    },
-    langPrefix: 'language-',
-    gfm: true,
-    breaks: true
-  });
-
-  const htmlContent = marked.parse(fullMarkdownContent);
-  markdownOutputDiv.innerHTML = htmlContent;
-
-  // Procesar bloques Mermaid si los hay
-  const mermaidBlocks = markdownOutputDiv.querySelectorAll('code.language-mermaid');
-  if (mermaidBlocks.length > 0) {
-    mermaid.initialize({ startOnLoad: false });
-
-    mermaidBlocks.forEach((block) => {
-      const container = document.createElement('div');
-      container.classList.add('mermaid');
-      container.innerHTML = block.textContent;
-
-      const pre = block.parentElement;
-      pre.parentElement.replaceChild(container, pre);
-    });
-
-    mermaid.init(undefined, ".mermaid");
-  }
-}
-
-*/
 
 function renderMarkdownFromAIOutput(aiOutput) {
   const markdownOutputDiv = document.getElementById('markdown-output');
@@ -278,49 +215,110 @@ function renderMarkdownFromAIOutput(aiOutput) {
   // Reprocesa los diagramas en caso de que hayan sido generados dinámicamente
   mermaid.init(undefined, markdownOutputDiv.querySelectorAll(".language-mermaid"));
 }
+*/
 
-</script>
 
-<!-- Agregar este script para mejorar las métricas -->
-<script>
-  function enhanceDashboard() {
-    // Agregar métricas en tiempo real
-    const metricElements = document.querySelectorAll('.metric-card');
-    metricElements.forEach(card => {
-      const valueElement = card.querySelector('h3');
-      if (valueElement) {
-        const targetValue = parseFloat(valueElement.textContent);
-        animateValue(valueElement, 0, targetValue, 2000);
+function renderMarkdownFromAIOutput(aiOutput) {
+  const markdownOutputDiv = document.getElementById('markdown-output');
+
+  // Construcción del bloque inicial
+  const introMarkdown = `
+## 🧪 Plan de Automatización
+
+- **Tipo de Aplicación**: ${aiOutput.tipoAplicacion || 'N/A'}
+- **Tipo de Prueba**: ${aiOutput.tipoPrueba || 'N/A'}
+- **Framework**: ${aiOutput.framework || 'N/A'}
+- **Pipeline**: ${aiOutput.pipeline || 'N/A'}
+- **Prioridad**: ${aiOutput.prioridad || 'N/A'}
+- **Fecha de Ejecución**: ${aiOutput.fechaEjecucion || 'N/A'}
+- **Ambiente**: ${aiOutput.ambiente || 'N/A'}
+- **Progreso**: ${aiOutput.progreso ?? '0'}%
+- **Timestamp**: ${aiOutput.timestamp || 'N/A'}
+
+---
+`;
+
+  let exercisesMarkdown = aiOutput.exercises || '';
+
+  // Limpieza robusta de caracteres escapados
+  exercisesMarkdown = exercisesMarkdown
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\')
+    .replace(/```javascript/g, '```js') // Normalizar bloques de código
+    .replace(/``` typescript/g, '```ts')
+    .replace(/``` json/g, '```json');
+
+  // Manejo específico de bloques de código con triple backtick
+  exercisesMarkdown = exercisesMarkdown.replace(
+    /```(.*?)```/gs, 
+    (match, codeContent) => {
+      // Eliminar backticks escapados dentro del código
+      const cleanCode = codeContent
+        .replace(/\\`\\`\\`/g, '```') // Restaurar triple backtick escapados
+        .replace(/\\`/g, '`'); // Restaurar backticks individuales escapados
+      
+      return '```' + cleanCode + '```';
+    }
+  );
+
+  const fullMarkdownContent = introMarkdown + exercisesMarkdown;
+
+  // Configuración de marked
+  marked.setOptions({
+    highlight: function(code, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+        try {
+          return hljs.highlight(code, { language: lang }).value;
+        } catch (err) {
+          console.warn(`Error al resaltar código ${lang}:`, err);
+        }
       }
-    });
-    
-    // Agregar tooltips a los badges de estado
-    const badges = document.querySelectorAll('.status-badge');
-    badges.forEach(badge => {
-      badge.title = 'Haz clic para ver detalles';
-    });
-  }
-  
-  function animateValue(element, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      element.textContent = Math.floor(progress * (end - start) + start);
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    // Mejorar la visualización después de renderizar el markdown
-    setTimeout(enhanceDashboard, 100);
+      return hljs.highlightAuto(code).value;
+    },
+    langPrefix: 'hljs language-',
+    gfm: true,
+    breaks: true
   });
+
+  // Renderizar Markdown
+  const htmlContent = marked.parse(fullMarkdownContent);
+  markdownOutputDiv.innerHTML = htmlContent;
+
+  // Procesar diagramas Mermaid
+  const mermaidBlocks = markdownOutputDiv.querySelectorAll('code.language-mermaid');
+  if (mermaidBlocks.length > 0) {
+    mermaid.initialize({ 
+      startOnLoad: false,
+      theme: 'default',
+      securityLevel: 'loose'
+    });
+
+    mermaidBlocks.forEach((block) => {
+      const container = document.createElement('div');
+      container.classList.add('mermaid');
+      container.textContent = block.textContent;
+      
+      const pre = block.parentElement;
+      if (pre && pre.tagName === 'PRE') {
+        pre.parentElement.replaceChild(container, pre);
+      }
+    });
+
+    mermaid.init(undefined, markdownOutputDiv.querySelectorAll('.mermaid'));
+  }
+
+  // Mejorar la visualización después de renderizar el markdown
+  setTimeout(enhanceDashboard, 100);
+}
+	  
+	  
 </script>
+
 
 </body>
 </html>
+
 
 
