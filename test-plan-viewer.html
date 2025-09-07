@@ -1,855 +1,163 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plan de Automatización ISTQB</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github-dark-dimmed.css">
+  <meta charset="UTF-8">
+  <title>Visor de Plan de Automatización</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Estilos base -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/common.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
+
   <style>
-    :root {
-      --primary: #2c3e50;
-      --secondary: #3498db;
-      --accent: #e74c3c;
-      --light: #ecf0f1;
-      --dark: #2c3e50;
-      --success: #2ecc71;
-      --warning: #f39c12;
-      --info: #17a2b8;
-      --gray: #95a5a6;
-      --bg-light: #f8f9fa;
-      --bg-dark: #1a1d21;
-      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 2rem;
       line-height: 1.6;
-      color: #333;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-      padding: 20px;
     }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
+    h1, h2, h3 {
+      color: #38bdf8;
     }
-    
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 25px;
-      text-align: center;
-      position: relative;
-    }
-    
-    .logo {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-    
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-    }
-    
-    .subtitle {
-      font-size: 1.1rem;
-      opacity: 0.9;
-      margin-bottom: 15px;
-    }
-    
-    .metadata {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 20px;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-    }
-    
-    .metadata-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .metadata-label {
-      font-size: 0.8rem;
-      opacity: 0.8;
-      margin-bottom: 5px;
-    }
-    
-    .metadata-value {
-      font-weight: 600;
-      font-size: 1rem;
-    }
-    
-    .tabs {
-      display: flex;
-      background: var(--light);
-      border-bottom: 2px solid #ddd;
-      overflow-x: auto;
-    }
-    
-    .tab {
-      padding: 15px 25px;
-      cursor: pointer;
-      font-weight: 600;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .tab:hover {
-      background: rgba(52, 152, 219, 0.1);
-    }
-    
-    .tab.active {
-      border-bottom: 3px solid var(--secondary);
-      color: var(--secondary);
-    }
-    
-    .tab i {
-      font-size: 1.2rem;
-    }
-    
-    .tab-content {
-      display: none;
-      padding: 30px;
-      min-height: 400px;
-    }
-    
-    .tab-content.active {
-      display: block;
-      animation: fadeIn 0.5s ease;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: var(--card-shadow);
-      margin-bottom: 25px;
-      overflow: hidden;
-    }
-    
-    .card-header {
-      background: var(--light);
-      padding: 15px 20px;
-      font-weight: 600;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .card-body {
-      padding: 20px;
-    }
-    
     pre {
-      background-color: #2d2d2d;
-      color: #f8f8f2;
-      padding: 1em;
-      border-radius: 5px;
+      background: #1e293b;
+      border-radius: 8px;
+      padding: 1rem;
       overflow-x: auto;
-      margin: 15px 0;
-      font-size: 0.9rem;
+      margin: 1rem 0;
     }
-    
     code {
-      font-family: 'Fira Code', 'Consolas', monospace;
-      background-color: #e0e0e0;
-      padding: 0.2em 0.4em;
-      border-radius: 3px;
-      color: #c7254e;
-      font-size: 0.9em;
+      font-family: "Fira Code", monospace;
     }
-    
-    pre code {
-      background-color: transparent;
-      color: inherit;
-      padding: 0;
+    .section {
+      margin-bottom: 3rem;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 2rem;
     }
-    
-    .file-tree {
-      background: #2d2d2d;
-      color: #f8f8f2;
-      padding: 15px;
-      border-radius: 5px;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin: 15px 0;
-    }
-    
-    .file-tree div {
-      margin-left: 20px;
-      position: relative;
-    }
-    
-    .file-tree div:before {
-      content: "├── ";
-      position: absolute;
-      left: -20px;
-      color: #6a737d;
-    }
-    
-    .file-tree div:last-child:before {
-      content: "└── ";
-    }
-    
-    .actions {
-      display: flex;
-      gap: 15px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-    
-    .btn {
-      padding: 12px 20px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      border: none;
-    }
-    
-    .btn-primary {
-      background: var(--secondary);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background: #2980b9;
-      transform: translateY(-2px);
-    }
-    
-    .btn-secondary {
-      background: var(--light);
-      color: var(--dark);
-    }
-    
-    .btn-secondary:hover {
-      background: #bdc3c7;
-    }
-    
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-left: 8px;
-    }
-    
-    .badge-success {
-      background: var(--success);
-      color: white;
-    }
-    
-    .badge-warning {
-      background: var(--warning);
-      color: white;
-    }
-    
-    .badge-info {
-      background: var(--info);
-      color: white;
-    }
-    
-    .progress-bar {
-      height: 8px;
-      background: #e0e0e0;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 15px 0;
-    }
-    
-    .progress {
-      height: 100%;
-      background: var(--success);
-      border-radius: 4px;
-      width: 65%;
-    }
-    
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: var(--light);
-      color: var(--dark);
-      font-size: 0.9rem;
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--gray);
-    }
-    
     .error {
-      text-align: center;
-      padding: 40px;
-      color: var(--accent);
-    }
-    
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 15px 0;
-    }
-    
-    .status-checkbox {
-      width: 20px;
-      height: 20px;
-      accent-color: var(--success);
-    }
-    
-    .status-label {
-      font-weight: 500;
-    }
-    
-    .status-completed {
-      color: var(--success);
-    }
-    
-    .status-pending {
-      color: var(--warning);
-    }
-    
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    
-    .tool-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      background: #f8f9fa;
+      background: #dc2626;
+      color: #fff;
+      padding: 1rem;
       border-radius: 6px;
-      border: 1px solid #e9ecef;
-    }
-    
-    @media (max-width: 768px) {
-      .tabs {
-        flex-direction: column;
-      }
-      
-      .tab {
-        border-bottom: 1px solid #ddd;
-        border-left: 3px solid transparent;
-      }
-      
-      .tab.active {
-        border-left: 3px solid var(--secondary);
-        border-bottom: 1px solid #ddd;
-      }
-      
-      .metadata {
-        flex-direction: column;
-        gap: 10px;
-      }
-      
-      .metadata-item {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-      
-      .tools-grid {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <i class="fas fa-robot"></i>
-      </div>
-      <h1>Plan de Automatización ISTQB</h1>
-      <p class="subtitle">Sistema de salud para arquitectura de microservicios</p>
-      
-      <div class="metadata">
-        <div class="metadata-item">
-          <span class="metadata-label">Framework</span>
-          <span class="metadata-value">Cypress</span>
-        </div>
-        <div class="metadata-item">
-          <span class="metadata-label">Prioridad</span>
-          <span class="metadata-value">Alta</span>
-        </div>
-        <div class="metadata-item">
-          <span class="metadata-label">Ambiente</span>
-          <span class="metadata-value">Local</span>
-        </div>
-        <div class="metadata-item">
-          <span class="metadata-label">Estado</span>
-          <span class="metadata-value">En desarrollo</span>
-        </div>
-        <div class="metadata-item">
-          <span class="metadata-label">Fecha</span>
-          <span class="metadata-value" id="current-date">7/9/2025</span>
-        </div>
-      </div>
-    </header>
-    
-    <div class="tabs">
-      <div class="tab active" data-tab="resumen">
-        <i class="fas fa-home"></i> Resumen
-      </div>
-      <div class="tab" data-tab="setup">
-        <i class="fas fa-cogs"></i> Setup Local
-      </div>
-      <div class="tab" data-tab="config">
-        <i class="fas fa-sliders-h"></i> Configuración
-      </div>
-      <div class="tab" data-tab="ejecucion">
-        <i class="fas fa-play-circle"></i> Ejecución
-      </div>
-      <div class="tab" data-tab="cicd">
-        <i class="fas fa-code-branch"></i> CI/CD
-      </div>
-      <div class="tab" data-tab="herramientas">
-        <i class="fas fa-tools"></i> Herramientas
-      </div>
-    </div>
-    
-    <div class="tab-content active" id="resumen">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-info-circle"></i> Resumen Ejecutivo
-        </div>
-        <div class="card-body">
-          <p>Este plan de automatización está diseñado para validar el correcto funcionamiento de una arquitectura de microservicios basada en Spring Boot, con foco en los endpoints de health check y la integración entre servicios.</p>
-          
-          <h3>Objetivos principales</h3>
-          <ul>
-            <li>Verificar el estado de salud de todos los microservicios</li>
-            <li>Automatizar las pruebas de integración entre servicios</li>
-            <li>Generar reportes de ejecución para análisis de calidad</li>
-            <li>Integrar con pipeline CI/CD para ejecución automática</li>
-          </ul>
-          
-          <div class="progress-bar">
-            <div class="progress"></div>
-          </div>
-          <div style="text-align: center; font-size: 0.9rem;">Progreso general: 65%</div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-project-diagram"></i> Arquitectura del Sistema
-        </div>
-        <div class="card-body">
-          <p>La arquitectura consiste en múltiples microservicios Spring Boot que se comunican a través de un API Gateway y se registran en un servicio de descubrimiento.</p>
-          
-          <pre><code class="language-yaml"># Ejemplo de configuración de microservicios
-microservices:
-  discoverer:
-    port: 8761
-    health: http://localhost:8761/actuator/health
-  gateway:
-    port: 8080
-    health: http://localhost:8080/actuator/health
-  keycloak:
-    port: 9080
-    health: http://localhost:9080/auth/health
-  zipkin:
-    port: 9411
-    health: http://localhost:9411/health</code></pre>
-        </div>
-      </div>
-    </div>
-    
-    <div class="tab-content" id="setup">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-folder-tree"></i> Estructura del Proyecto
-        </div>
-        <div class="card-body">
-          <p>El proyecto sigue una estructura organizada para facilitar el mantenimiento y la escalabilidad de las pruebas.</p>
-          
-          <div class="file-tree">
-            <div>tu-proyecto/
-              <div>cypress/
-                <div>e2e/
-                  <div>system-health-check.cy.js</div>
-                </div>
-                <div>support/
-                  <div>commands.js</div>
-                </div>
-                <div>reports/ ← aquí se generan los reportes</div>
-              </div>
-              <div>config/
-                <div>dev.env.js</div>
-              </div>
-              <div>monitoring/
-                <div>dashboard-config.js</div>
-              </div>
-              <div>package.json</div>
-              <div>.github/
-                <div>workflows/
-                  <div>system-health-check.yml</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-code"></i> Script de Configuración (PowerShell)
-        </div>
-        <div class="card-body">
-          <p>Ejecuta el siguiente script para crear la estructura de carpetas y archivos necesaria:</p>
-          
-          <pre><code class="language-powershell"># setup-cypress-project.ps1
-$folders = @(
-  "cypress/e2e",
-  "cypress/support", 
-  "cypress/reports",
-  "config",
-  "monitoring",
-  ".github/workflows"
-)
-
-foreach ($folder in $folders) {
-  if (!(Test-Path -Path $folder)) {
-    New-Item -ItemType Directory -Path $folder -Force | Out-Null
-    Write-Host "Carpeta creada: $folder"
-  }
-}
-
-$files = @(
-  "cypress/e2e/system-health-check.cy.js",
-  "cypress/support/commands.js", 
-  "config/dev.env.js",
-  "monitoring/dashboard-config.js",
-  "package.json",
-  ".github/workflows/system-health-check.yml"
-)
-
-foreach ($file in $files) {
-  if (!(Test-Path -Path $file)) {
-    New-Item -ItemType File -Path $file -Force | Out-Null
-    Write-Host "Archivo creado: $file"
-  }
-}
-
-Write-Host "✅ Estructura de proyecto Cypress creada exitosamente."</code></pre>
-        </div>
-      </div>
-    </div>
-    
-    <div class="tab-content" id="config">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-wrench"></i> Configuración de Microservicios
-        </div>
-        <div class="card-body">
-          <p>Para habilitar los endpoints de health check en cada microservicio Spring Boot, agregar la siguiente configuración:</p>
-          
-          <pre><code class="language-xml">&lt;!-- En pom.xml --&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-          
-          <pre><code class="language-yaml"># En application.yml
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: always</code></pre>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-cog"></i> Configuración de Cypress
-        </div>
-        <div class="card-body">
-          <p>Configuración del ambiente de desarrollo en <code>config/dev.env.js</code>:</p>
-          
-          <pre><code class="language-javascript">// Configuración de endpoints de microservicios
-const microservices = {
-  discoverer: {
-    port: 8761,
-    health: 'http://localhost:8761/actuator/health'
-  },
-  gateway: {
-    port: 8080,
-    health: 'http://localhost:8080/actuator/health'
-  },
-  // ... otros servicios
-};
-
-module.exports = {
-  microservices,
-  timeout: 30000,
-  vpnRequired: true
-};</code></pre>
-        </div>
-      </div>
-    </div>
-    
-    <div class="tab-content" id="ejecucion">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-terminal"></i> Comandos de Ejecución
-        </div>
-        <div class="card-body">
-          <p>Secuencia de comandos para ejecutar las pruebas:</p>
-          
-          <pre><code class="language-bash"># Navegar al directorio del proyecto
-cd C:\ruta\de\tu\proyecto
-
-# Instalar dependencias
-npm install
-
-# Abrir Cypress en modo interfaz gráfica (E2E Testing)
-npm run test:open
-
-# Ejecutar pruebas en modo consola (CI/CD)
-npm run test:e2e
-
-# Generar reporte HTML
-npm run test:report</code></pre>
-          
-          <div class="actions">
-            <button class="btn btn-primary">
-              <i class="fas fa-play"></i> Ejecutar Pruebas
-            </button>
-            <button class="btn btn-secondary">
-              <i class="fas fa-download"></i> Descargar Reporte
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-chart-line"></i> Monitoreo y Reportes
-        </div>
-        <div class="card-body">
-          <p>Los reportes se generan en la carpeta <code>cypress/reports/html/</code> después de cada ejecución.</p>
-          
-          <p>Métricas clave a monitorear:</p>
-          <ul>
-            <li>Tasa de éxito de pruebas (%)</li>
-            <li>Tiempo promedio de ejecución</li>
-            <li>Detección temprana de bugs</li>
-            <li>ROI de automatización</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <div class="tab-content" id="cicd">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-code-branch"></i> Integración CI/CD
-        </div>
-        <div class="card-body">
-          <p>Configuración de GitHub Actions para ejecución automática:</p>
-          
-          <pre><code class="language-yaml"># .github/workflows/system-health-check.yml
-name: System Health Check
-on:
-  push:
-    branches: [ feature/automation ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-    - name: Install dependencies
-      run: npm install
-    - name: Run E2E tests
-      run: npm run test:e2e
-    - name: Generate report
-      run: npm run test:report
-    - name: Upload report
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-report
-        path: cypress/reports/html/</code></pre>
-        </div>
-      </div>
-    </div>
-    
-    <div class="tab-content" id="herramientas">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-tools"></i> Herramientas de Desarrollo
-        </div>
-        <div class="card-body">
-          <p>Las siguientes herramientas están disponibles para el desarrollo y debugging:</p>
-          
-          <div class="tools-grid">
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox" checked>
-              <span class="status-label">Inspector</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox" checked>
-              <span class="status-label">Consola</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox">
-              <span class="status-label">Depurador</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox" checked>
-              <span class="status-label">Red</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox">
-              <span class="status-label">Editor de entidades</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox" checked>
-              <span class="status-label">Rendimiento</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox">
-              <span class="status-label">Memoria</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox">
-              <span class="status-label">Almacenamiento</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox" checked>
-              <span class="status-label">Accesibilidad</span>
-            </div>
-            <div class="tool-item">
-              <input type="checkbox" class="status-checkbox">
-              <span class="status-label">Aplicación</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-info-circle"></i> Información del Sistema
-        </div>
-        <div class="card-body">
-          <p>Estado actual del entorno de desarrollo:</p>
-          
-          <div class="status-indicator">
-            <input type="checkbox" class="status-checkbox" checked>
-            <span class="status-label status-completed">Conexión VPN activa</span>
-          </div>
-          
-          <div class="status-indicator">
-            <input type="checkbox" class="status-checkbox">
-            <span class="status-label status-pending">Servicios de microservicios ejecutándose</span>
-          </div>
-          
-          <div class="status-indicator">
-            <input type="checkbox" class="status-checkbox" checked>
-            <span class="status-label status-completed">Cypress instalado correctamente</span>
-          </div>
-          
-          <div class="status-indicator">
-            <input type="checkbox" class="status-checkbox" checked>
-            <span class="status-label status-completed">Dependencias de Node.js resueltas</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <footer>
-      <p>Plan de Automatización ISTQB • Generado el 7 de Septiembre de 2025</p>
-      <p>© 2023 Equipo de Calidad y Automatización</p>
-    </footer>
-  </div>
+  <div id="resumen"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Configuración de marked con highlight.js
-      marked.setOptions({
-        highlight: function (code, lang) {
-          if (lang && hljs.getLanguage(lang)) {
-            return hljs.highlight(code, { language: lang }).value;
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const rutaId = params.get('rutaId');
+      const userEmail = params.get('email');
+
+      if (!rutaId || !userEmail) {
+        document.getElementById('resumen').innerHTML = `
+          <div class="error">⚠️ Faltan parámetros en la URL: rutaId y email son requeridos</div>
+        `;
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://www.refactorii.com/api/tenant/workflow/planeador_de_automatizacion_ISTQB/verifyExercisesInPath`, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-email': userEmail.toLowerCase().trim(),
+            'x-path-id': String(rutaId)
           }
-          return hljs.highlightAuto(code).value;
-        },
-        gfm: true,
-        breaks: true
-      });
-      
-      // Resaltar todos los bloques de código
-      document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightElement(block);
-      });
-      
-      // Funcionalidad de pestañas
-      const tabs = document.querySelectorAll('.tab');
-      const tabContents = document.querySelectorAll('.tab-content');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          const tabId = tab.getAttribute('data-tab');
-          
-          // Desactivar todas las pestañas
-          tabs.forEach(t => t.classList.remove('active'));
-          tabContents.forEach(tc => tc.classList.remove('active'));
-          
-          // Activar la pestaña seleccionada
-          tab.classList.add('active');
-          document.getElementById(tabId).classList.add('active');
         });
-      });
+
+        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
+
+        const data = await response.json();
+        const ruta = data?.ruta;
+
+        if (ruta?.exercises) {
+          const planData = JSON.parse(ruta.exercises);
+          renderPlanData(planData);
+        } else {
+          document.getElementById('resumen').innerHTML = `
+            <div class="error">❌ No se encontraron ejercicios válidos en la respuesta</div>
+          `;
+        }
+      } catch (error) {
+        document.getElementById('resumen').innerHTML = `
+          <div class="error">❌ Error al cargar los datos: ${error.message}</div>
+        `;
+      }
     });
+
+    function renderPlanData(plan) {
+      const container = document.getElementById('resumen');
+      container.innerHTML = '';
+
+      // 1️⃣ Resumen Ejecutivo (Markdown a HTML)
+      if (plan.resumenEjecutivo) {
+        container.innerHTML += `
+          <div class="section">
+            ${marked.parse(plan.resumenEjecutivo)}
+          </div>
+        `;
+      }
+
+      // 2️⃣ Setup Local
+      if (plan.setupLocal) {
+        container.innerHTML += `
+          <div class="section">
+            <h2>⚙️ Setup Local</h2>
+            ${marked.parse(plan.setupLocal.herramientasNecesarias)}
+
+            <h3>📦 package.json</h3>
+            <pre><code class="json">${JSON.stringify(plan.setupLocal.packageJson, null, 2)}</code></pre>
+
+            <h3>💻 Script PowerShell</h3>
+            <pre><code class="powershell">${plan.setupLocal.scriptPowershell}</code></pre>
+
+            ${marked.parse(plan.setupLocal.explicacionEstructura)}
+            <pre><code class="plaintext">${plan.setupLocal.arbolArchivos}</code></pre>
+          </div>
+        `;
+      }
+
+      // 3️⃣ Configuración Pruebas
+      if (plan.configuracionPruebas) {
+        container.innerHTML += `
+          <div class="section">
+            <h2>🛠 Configuración de Pruebas</h2>
+            ${marked.parse(plan.configuracionPruebas.configuracionBackend)}
+            <pre><code class="javascript">${plan.configuracionPruebas.configuracionCypress}</code></pre>
+            ${marked.parse(plan.configuracionPruebas.verificacionAmbiente)}
+          </div>
+        `;
+      }
+
+      // 4️⃣ Ejecución de Pruebas
+      if (plan.ejecucionPruebas) {
+        container.innerHTML += `
+          <div class="section">
+            ${marked.parse(plan.ejecucionPruebas)}
+          </div>
+        `;
+      }
+
+      // 5️⃣ Integración CI/CD
+      if (plan.integracionCI_CD) {
+        container.innerHTML += `
+          <div class="section">
+            ${marked.parse(plan.integracionCI_CD)}
+          </div>
+        `;
+      }
+
+      // Aplicar highlight.js a todos los bloques de código
+      document.querySelectorAll('pre code').forEach(el => {
+        hljs.highlightElement(el);
+      });
+    }
   </script>
 </body>
 </html>
