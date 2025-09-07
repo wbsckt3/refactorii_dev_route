@@ -114,6 +114,9 @@
       border-bottom: 3px solid transparent;
       transition: all 0.3s ease;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
     .tab:hover {
@@ -123,6 +126,10 @@
     .tab.active {
       border-bottom: 3px solid var(--secondary);
       color: var(--secondary);
+    }
+    
+    .tab i {
+      font-size: 1.2rem;
     }
     
     .tab-content {
@@ -313,6 +320,48 @@
       color: var(--accent);
     }
     
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .status-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--success);
+    }
+    
+    .status-label {
+      font-weight: 500;
+    }
+    
+    .status-completed {
+      color: var(--success);
+    }
+    
+    .status-pending {
+      color: var(--warning);
+    }
+    
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+    }
+    
     @media (max-width: 768px) {
       .tabs {
         flex-direction: column;
@@ -336,6 +385,10 @@
       .metadata-item {
         flex-direction: row;
         justify-content: space-between;
+      }
+      
+      .tools-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -368,66 +421,400 @@
         </div>
         <div class="metadata-item">
           <span class="metadata-label">Fecha</span>
-          <span class="metadata-value" id="current-date"></span>
+          <span class="metadata-value" id="current-date">7/9/2025</span>
         </div>
       </div>
     </header>
     
     <div class="tabs">
-      <div class="tab active" data-tab="resumen"><i class="fas fa-home"></i> Resumen</div>
-      <div class="tab" data-tab="setup"><i class="fas fa-cogs"></i> Setup Local</div>
-      <div class="tab" data-tab="config"><i class="fas fa-sliders-h"></i> Configuración</div>
-      <div class="tab" data-tab="ejecucion"><i class="fas fa-play-circle"></i> Ejecución</div>
-      <div class="tab" data-tab="cicd"><i class="fas fa-code-branch"></i> CI/CD</div>
+      <div class="tab active" data-tab="resumen">
+        <i class="fas fa-home"></i> Resumen
+      </div>
+      <div class="tab" data-tab="setup">
+        <i class="fas fa-cogs"></i> Setup Local
+      </div>
+      <div class="tab" data-tab="config">
+        <i class="fas fa-sliders-h"></i> Configuración
+      </div>
+      <div class="tab" data-tab="ejecucion">
+        <i class="fas fa-play-circle"></i> Ejecución
+      </div>
+      <div class="tab" data-tab="cicd">
+        <i class="fas fa-code-branch"></i> CI/CD
+      </div>
+      <div class="tab" data-tab="herramientas">
+        <i class="fas fa-tools"></i> Herramientas
+      </div>
     </div>
     
     <div class="tab-content active" id="resumen">
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Cargando resumen...
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-info-circle"></i> Resumen Ejecutivo
+        </div>
+        <div class="card-body">
+          <p>Este plan de automatización está diseñado para validar el correcto funcionamiento de una arquitectura de microservicios basada en Spring Boot, con foco en los endpoints de health check y la integración entre servicios.</p>
+          
+          <h3>Objetivos principales</h3>
+          <ul>
+            <li>Verificar el estado de salud de todos los microservicios</li>
+            <li>Automatizar las pruebas de integración entre servicios</li>
+            <li>Generar reportes de ejecución para análisis de calidad</li>
+            <li>Integrar con pipeline CI/CD para ejecución automática</li>
+          </ul>
+          
+          <div class="progress-bar">
+            <div class="progress"></div>
+          </div>
+          <div style="text-align: center; font-size: 0.9rem;">Progreso general: 65%</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-project-diagram"></i> Arquitectura del Sistema
+        </div>
+        <div class="card-body">
+          <p>La arquitectura consiste en múltiples microservicios Spring Boot que se comunican a través de un API Gateway y se registran en un servicio de descubrimiento.</p>
+          
+          <pre><code class="language-yaml"># Ejemplo de configuración de microservicios
+microservices:
+  discoverer:
+    port: 8761
+    health: http://localhost:8761/actuator/health
+  gateway:
+    port: 8080
+    health: http://localhost:8080/actuator/health
+  keycloak:
+    port: 9080
+    health: http://localhost:9080/auth/health
+  zipkin:
+    port: 9411
+    health: http://localhost:9411/health</code></pre>
+        </div>
       </div>
     </div>
     
     <div class="tab-content" id="setup">
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Cargando configuración...
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-folder-tree"></i> Estructura del Proyecto
+        </div>
+        <div class="card-body">
+          <p>El proyecto sigue una estructura organizada para facilitar el mantenimiento y la escalabilidad de las pruebas.</p>
+          
+          <div class="file-tree">
+            <div>tu-proyecto/
+              <div>cypress/
+                <div>e2e/
+                  <div>system-health-check.cy.js</div>
+                </div>
+                <div>support/
+                  <div>commands.js</div>
+                </div>
+                <div>reports/ ← aquí se generan los reportes</div>
+              </div>
+              <div>config/
+                <div>dev.env.js</div>
+              </div>
+              <div>monitoring/
+                <div>dashboard-config.js</div>
+              </div>
+              <div>package.json</div>
+              <div>.github/
+                <div>workflows/
+                  <div>system-health-check.yml</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-code"></i> Script de Configuración (PowerShell)
+        </div>
+        <div class="card-body">
+          <p>Ejecuta el siguiente script para crear la estructura de carpetas y archivos necesaria:</p>
+          
+          <pre><code class="language-powershell"># setup-cypress-project.ps1
+$folders = @(
+  "cypress/e2e",
+  "cypress/support", 
+  "cypress/reports",
+  "config",
+  "monitoring",
+  ".github/workflows"
+)
+
+foreach ($folder in $folders) {
+  if (!(Test-Path -Path $folder)) {
+    New-Item -ItemType Directory -Path $folder -Force | Out-Null
+    Write-Host "Carpeta creada: $folder"
+  }
+}
+
+$files = @(
+  "cypress/e2e/system-health-check.cy.js",
+  "cypress/support/commands.js", 
+  "config/dev.env.js",
+  "monitoring/dashboard-config.js",
+  "package.json",
+  ".github/workflows/system-health-check.yml"
+)
+
+foreach ($file in $files) {
+  if (!(Test-Path -Path $file)) {
+    New-Item -ItemType File -Path $file -Force | Out-Null
+    Write-Host "Archivo creado: $file"
+  }
+}
+
+Write-Host "✅ Estructura de proyecto Cypress creada exitosamente."</code></pre>
+        </div>
       </div>
     </div>
     
     <div class="tab-content" id="config">
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Cargando pruebas...
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-wrench"></i> Configuración de Microservicios
+        </div>
+        <div class="card-body">
+          <p>Para habilitar los endpoints de health check en cada microservicio Spring Boot, agregar la siguiente configuración:</p>
+          
+          <pre><code class="language-xml">&lt;!-- En pom.xml --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+          
+          <pre><code class="language-yaml"># En application.yml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always</code></pre>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-cog"></i> Configuración de Cypress
+        </div>
+        <div class="card-body">
+          <p>Configuración del ambiente de desarrollo en <code>config/dev.env.js</code>:</p>
+          
+          <pre><code class="language-javascript">// Configuración de endpoints de microservicios
+const microservices = {
+  discoverer: {
+    port: 8761,
+    health: 'http://localhost:8761/actuator/health'
+  },
+  gateway: {
+    port: 8080,
+    health: 'http://localhost:8080/actuator/health'
+  },
+  // ... otros servicios
+};
+
+module.exports = {
+  microservices,
+  timeout: 30000,
+  vpnRequired: true
+};</code></pre>
+        </div>
       </div>
     </div>
     
     <div class="tab-content" id="ejecucion">
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Cargando ejecución...
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-terminal"></i> Comandos de Ejecución
+        </div>
+        <div class="card-body">
+          <p>Secuencia de comandos para ejecutar las pruebas:</p>
+          
+          <pre><code class="language-bash"># Navegar al directorio del proyecto
+cd C:\ruta\de\tu\proyecto
+
+# Instalar dependencias
+npm install
+
+# Abrir Cypress en modo interfaz gráfica (E2E Testing)
+npm run test:open
+
+# Ejecutar pruebas en modo consola (CI/CD)
+npm run test:e2e
+
+# Generar reporte HTML
+npm run test:report</code></pre>
+          
+          <div class="actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-play"></i> Ejecutar Pruebas
+            </button>
+            <button class="btn btn-secondary">
+              <i class="fas fa-download"></i> Descargar Reporte
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-chart-line"></i> Monitoreo y Reportes
+        </div>
+        <div class="card-body">
+          <p>Los reportes se generan en la carpeta <code>cypress/reports/html/</code> después de cada ejecución.</p>
+          
+          <p>Métricas clave a monitorear:</p>
+          <ul>
+            <li>Tasa de éxito de pruebas (%)</li>
+            <li>Tiempo promedio de ejecución</li>
+            <li>Detección temprana de bugs</li>
+            <li>ROI de automatización</li>
+          </ul>
+        </div>
       </div>
     </div>
     
     <div class="tab-content" id="cicd">
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Cargando CI/CD...
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-code-branch"></i> Integración CI/CD
+        </div>
+        <div class="card-body">
+          <p>Configuración de GitHub Actions para ejecución automática:</p>
+          
+          <pre><code class="language-yaml"># .github/workflows/system-health-check.yml
+name: System Health Check
+on:
+  push:
+    branches: [ feature/automation ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Install dependencies
+      run: npm install
+    - name: Run E2E tests
+      run: npm run test:e2e
+    - name: Generate report
+      run: npm run test:report
+    - name: Upload report
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: cypress/reports/html/</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="herramientas">
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-tools"></i> Herramientas de Desarrollo
+        </div>
+        <div class="card-body">
+          <p>Las siguientes herramientas están disponibles para el desarrollo y debugging:</p>
+          
+          <div class="tools-grid">
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox" checked>
+              <span class="status-label">Inspector</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox" checked>
+              <span class="status-label">Consola</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox">
+              <span class="status-label">Depurador</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox" checked>
+              <span class="status-label">Red</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox">
+              <span class="status-label">Editor de entidades</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox" checked>
+              <span class="status-label">Rendimiento</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox">
+              <span class="status-label">Memoria</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox">
+              <span class="status-label">Almacenamiento</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox" checked>
+              <span class="status-label">Accesibilidad</span>
+            </div>
+            <div class="tool-item">
+              <input type="checkbox" class="status-checkbox">
+              <span class="status-label">Aplicación</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-info-circle"></i> Información del Sistema
+        </div>
+        <div class="card-body">
+          <p>Estado actual del entorno de desarrollo:</p>
+          
+          <div class="status-indicator">
+            <input type="checkbox" class="status-checkbox" checked>
+            <span class="status-label status-completed">Conexión VPN activa</span>
+          </div>
+          
+          <div class="status-indicator">
+            <input type="checkbox" class="status-checkbox">
+            <span class="status-label status-pending">Servicios de microservicios ejecutándose</span>
+          </div>
+          
+          <div class="status-indicator">
+            <input type="checkbox" class="status-checkbox" checked>
+            <span class="status-label status-completed">Cypress instalado correctamente</span>
+          </div>
+          
+          <div class="status-indicator">
+            <input type="checkbox" class="status-checkbox" checked>
+            <span class="status-label status-completed">Dependencias de Node.js resueltas</span>
+          </div>
+        </div>
       </div>
     </div>
     
     <footer>
-      <p>Plan de Automatización ISTQB • Generado el <span id="current-date-footer"></span></p>
+      <p>Plan de Automatización ISTQB • Generado el 7 de Septiembre de 2025</p>
       <p>© 2023 Equipo de Calidad y Automatización</p>
     </footer>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Establecer fecha actual
-      const currentDate = new Date().toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-      document.getElementById('current-date').textContent = currentDate;
-      document.getElementById('current-date-footer').textContent = currentDate;
-      
       // Configuración de marked con highlight.js
       marked.setOptions({
         highlight: function (code, lang) {
@@ -438,6 +825,11 @@
         },
         gfm: true,
         breaks: true
+      });
+      
+      // Resaltar todos los bloques de código
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
       });
       
       // Funcionalidad de pestañas
@@ -457,128 +849,7 @@
           document.getElementById(tabId).classList.add('active');
         });
       });
-      
-      // Simular datos de la API (en producción se conectaría a la API real)
-      setTimeout(() => {
-        loadPlanData();
-      }, 1500);
     });
-    
-    // Función para cargar datos del plan (simulando la API)
-    function loadPlanData() {
-      // En producción, aquí se haría el fetch a la API real
-      // Por ahora simulamos una respuesta
-      const mockResponse = {
-        resumenEjecutivo: `# Resumen Ejecutivo\n\nEste plan de automatización está diseñado para validar el correcto funcionamiento de una arquitectura de microservicios basada en Spring Boot, con foco en los endpoints de health check y la integración entre servicios.`,
-        
-        setupLocal: {
-          herramientasNecesarias: `## Prerrequisitos de Instalación\n\n- Node.js 16+\n- npm 8+\n- Java 17 (para microservicios Spring Boot)\n- PowerShell 5+ (Windows) o Bash (Linux/Mac)`,
-          packageJson: JSON.stringify({
-            name: "msa-health-check-automation",
-            version: "1.0.0",
-            scripts: {
-              "test:open": "cypress open --e2e",
-              "test:e2e": "cypress run --e2e --headless",
-              "test:report": "cypress run --e2e --headless --reporter mochawesome --reporter-options reportDir=cypress/reports/html,overwrite=false,html=true,json=false"
-            },
-            devDependencies: {
-              "cypress": "^12.0.0",
-              "mochawesome": "^7.1.3",
-              "mochawesome-merge": "^4.3.0",
-              "mochawesome-report-generator": "^6.2.0"
-            }
-          }, null, 2),
-          scriptPowershell: `# setup-cypress-project.ps1\n$folders = @(\n  "cypress/e2e",\n  "cypress/support", \n  "cypress/reports",\n  "config",\n  "monitoring",\n  ".github/workflows"\n)\n\nforeach ($folder in $folders) {\n  if (!(Test-Path -Path $folder)) {\n    New-Item -ItemType Directory -Path $folder -Force | Out-Null\n    Write-Host "Carpeta creada: $folder"\n  }\n}\n\n$files = @(\n  "cypress/e2e/system-health-check.cy.js",\n  "cypress/support/commands.js", \n  "config/dev.env.js",\n  "monitoring/dashboard-config.js",\n  "package.json",\n  ".github/workflows/system-health-check.yml"\n)\n\nforeach ($file in $files) {\n  if (!(Test-Path -Path $file)) {\n    New-Item -ItemType File -Path $file -Force | Out-Null\n    Write-Host "Archivo creado: $file"\n  }\n}\n\nWrite-Host "✅ Estructura de proyecto Cypress creada exitosamente."`,
-          explicacionEstructura: `## Estructura del Proyecto\n\nEl proyecto sigue una estructura organizada para facilitar el mantenimiento y la escalabilidad de las pruebas.`,
-          arbolArchivos: `/tu-proyecto\n├── cypress/\n│   ├── e2e/\n│   │   └── system-health-check.cy.js\n│   ├── support/\n│   │   └── commands.js\n│   └── reports/\n├── config/\n│   └── dev.env.js\n├── monitoring/\n│   └── dashboard-config.js\n├── package.json\n└── .github/\n    └── workflows/\n        └── system-health-check.yml`
-        },
-        
-        configuracionPruebas: {
-          configuracionBackend: `## Configuración de Microservicios Spring Boot\n\nPara habilitar los endpoints de health check en cada microservicio Spring Boot, agregar la siguiente configuración:\n\n\`\`\`xml\n<!-- En pom.xml -->\n<dependency>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-actuator</artifactId>\n    <scope>runtime</scope>\n</dependency>\n\`\`\`\n\n\`\`\`yaml\n# En application.yml\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health,info\n  endpoint:\n    health:\n      show-details: always\n\`\`\``,
-          configuracionCypress: `## Configuración de Cypress\n\nConfiguración del ambiente de desarrollo en \`config/dev.env.js\`:\n\n\`\`\`javascript\n// Configuración de endpoints de microservicios\nconst microservices = {\n  discoverer: {\n    port: 8761,\n    health: 'http://localhost:8761/actuator/health'\n  },\n  gateway: {\n    port: 8080,\n    health: 'http://localhost:8080/actuator/health'\n  }\n};\n\nmodule.exports = {\n  microservices,\n  timeout: 30000,\n  vpnRequired: true\n};\n\`\`\``,
-          verificacionAmbiente: `## Verificación del Ambiente\n\nAntes de ejecutar las pruebas, verificar que todos los servicios estén funcionando:\n\n\`\`\`bash\n#!/bin/bash\necho "Verificando servicios locales..."\nservices=("discoverer:8761" "gateway:8080" "keycloak:9080" "zipkin:9411")\n\nfor service in "${services[@]}"; do\n  IFS=":" read -r name port <<< "$service"\n  if nc -z localhost "$port"; then\n    echo "✅ $name en puerto $port está activo"\n  else\n    echo "❌ $name en puerto $port NO está respondiendo"\n  fi\ndone\n\`\`\``
-        },
-        
-        ejecucionPruebas: `## Ejecución de Pruebas\n\nComandos para ejecutar las pruebas:\n\n\`\`\`bash\n# Navegar al directorio del proyecto\ncd C:\\ruta\\de\\tu\\proyecto\n\n# Instalar dependencias\nnpm install\n\n# Abrir Cypress en modo interfaz gráfica (E2E Testing)\nnpm run test:open\n\n# Ejecutar pruebas en modo consola (CI/CD)\nnpm run test:e2e\n\n# Generar reporte HTML\nnpm run test:report\n\`\`\`\n\n## Monitoreo y Reportes\n\nLos reportes se generan en la carpeta \`cypress/reports/html/\` después de cada ejecución.`,
-        
-        integracionCI_CD: `## Integración CI/CD\n\nConfiguración de GitHub Actions para ejecución automática:\n\n\`\`\`yaml\n# .github/workflows/system-health-check.yml\nname: System Health Check\non:\n  push:\n    branches: [ feature/automation ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n    - uses: actions/checkout@v3\n    - name: Setup Node.js\n      uses: actions/setup-node@v3\n      with:\n        node-version: '18'\n    - name: Install dependencies\n      run: npm install\n    - name: Run E2E tests\n      run: npm run test:e2e\n    - name: Generate report\n      run: npm run test:report\n    - name: Upload report\n      uses: actions/upload-artifact@v3\n      with:\n        name: test-report\n        path: cypress/reports/html/\n\`\`\``
-      };
-      
-      // Renderizar los datos en las pestañas correspondientes
-      renderPlanData(mockResponse);
-    }
-    
-    // Función para renderizar los datos del plan
-    function renderPlanData(planData) {
-      // Renderizar resumen
-      document.getElementById('resumen').innerHTML = `
-        <div class="card">
-          <div class="card-header"><i class="fas fa-info-circle"></i> Resumen Ejecutivo</div>
-          <div class="card-body">${marked.parse(planData.resumenEjecutivo)}</div>
-        </div>
-      `;
-      
-      // Renderizar setup
-      document.getElementById('setup').innerHTML = `
-        <div class="card">
-          <div class="card-header"><i class="fas fa-tools"></i> Herramientas Necesarias</div>
-          <div class="card-body">${marked.parse(planData.setupLocal.herramientasNecesarias)}</div>
-        </div>
-        <div class="card">
-          <div class="card-header"><i class="fas fa-file-code"></i> package.json</div>
-          <div class="card-body"><pre><code class="language-json">${planData.setupLocal.packageJson}</code></pre></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><i class="fas fa-terminal"></i> Script PowerShell</div>
-          <div class="card-body"><pre><code class="language-powershell">${planData.setupLocal.scriptPowershell}</code></pre></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><i class="fas fa-folder-tree"></i> Estructura del Proyecto</div>
-          <div class="card-body">${marked.parse(planData.setupLocal.explicacionEstructura)}</div>
-        </div>
-        <div class="card">
-          <div class="card-header"><i class="fas fa-folder"></i> Árbol de Archivos</div>
-          <div class="card-body"><pre><code>${planData.setupLocal.arbolArchivos}</code></pre></div>
-        </div>
-      `;
-      
-      // Renderizar configuración
-      document.getElementById('config').innerHTML = `
-        <div class="card">
-          <div class="card-header"><i class="fas fa-server"></i> Configuración del Backend</div>
-          <div class="card-body">${marked.parse(planData.configuracionPruebas.configuracionBackend)}</div>
-        </div>
-        <div class="card">
-          <div class="card-header"><i class="fas fa-cog"></i> Configuración de Cypress</div>
-          <div class="card-body">${marked.parse(planData.configuracionPruebas.configuracionCypress)}</div>
-        </div>
-        <div class="card">
-          <div class="card-header"><i class="fas fa-check-circle"></i> Verificación del Ambiente</div>
-          <div class="card-body">${marked.parse(planData.configuracionPruebas.verificacionAmbiente)}</div>
-        </div>
-      `;
-      
-      // Renderizar ejecución
-      document.getElementById('ejecucion').innerHTML = `
-        <div class="card">
-          <div class="card-header"><i class="fas fa-terminal"></i> Comandos de Ejecución</div>
-          <div class="card-body">${marked.parse(planData.ejecucionPruebas)}</div>
-        </div>
-      `;
-      
-      // Renderizar CI/CD
-      document.getElementById('cicd').innerHTML = `
-        <div class="card">
-          <div class="card-header"><i class="fas fa-code-branch"></i> Integración CI/CD</div>
-          <div class="card-body"><pre><code class="language-yaml">${planData.integracionCI_CD.match(/```yaml\n([\s\S]*?)```/)[1]}</code></pre></div>
-        </div>
-      `;
-      
-      // Resaltar todos los bloques de código
-      document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightElement(block);
-      });
-    }
   </script>
 </body>
 </html>
