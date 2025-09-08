@@ -143,6 +143,7 @@
       font-weight: bold;
       color: var(--primary-color);
       margin-bottom: 5px;
+      font-size: 19px;
     }
     
     .param-value {
@@ -470,7 +471,20 @@
   </div>
 </div>
 
-<div class="card"> 3. REsultados de ejecución </div>
+<div class="card">
+    <div class="card-header">
+      <h2 class="card-title"><span class="icon">📋</span>3. Resultados del caso de prueba</h2>
+      <span class="badge badge-primary" id="status-badge">Cargando...</span>
+    </div>
+    
+    <div class="param-grid" id="params-container">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Cargando datos desde el servidor...</p>
+      </div>
+    </div>
+</div>
+
 `;
 
       // Limpieza del contenido de ejercicios
