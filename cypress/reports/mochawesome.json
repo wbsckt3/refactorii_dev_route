@@ -1,0 +1,105 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-09-08T21:09:37.431Z",
+    "end": "2025-09-08T21:09:39.764Z",
+    "duration": 2333,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "264d9579-0200-4bd9-b422-4b32ca6e773d",
+      "title": "",
+      "fullFile": "cypress\\e2e\\system-health-check.cy.js",
+      "file": "cypress\\e2e\\system-health-check.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "a5eeb88c-6fad-49a2-8373-a359afaa345a",
+          "title": "Sistema Completo Health Check",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "TC_cargue_sistema - Validar estado completo del sistema",
+              "fullTitle": "Sistema Completo Health Check TC_cargue_sistema - Validar estado completo del sistema",
+              "timedOut": null,
+              "duration": 2183,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// 1. Validar Keycloak\ncy.validateKeycloak();\n// 2. Validar Zipkin\ncy.validateZipkin();\n// 3. Validar microservicios Spring Boot\ncy.validateSpringBootServices();\n// 4. Validar conexiones a bases de datos\n// cy.validateDatabaseConnections();\n// 5. Validar AWS S3\n// cy.validateAWSConnectivity();\n// 6. Validar Frontend Vue.js\n// cy.validateFrontend(); \n// 7. Validar integración completa\n//cy.validateFullIntegration();",
+              "err": {},
+              "uuid": "769e7094-b4cb-4b28-a33d-0d128708ea8a",
+              "parentUUID": "a5eeb88c-6fad-49a2-8373-a359afaa345a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "769e7094-b4cb-4b28-a33d-0d128708ea8a"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2183,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}
