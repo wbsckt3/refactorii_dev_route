@@ -664,7 +664,7 @@ exports.verifyExercisesInTestAutomationPath = <span class="keyword">async</span>
 
 <span class="comment">// DESPUÉS: Valida por token</span>
 <span class="keyword">const</span> jwt = <span class="function">require</span>(<span class="string">'jsonwebtoken'</span>);
-<span class="keyword">const</span> secretKey = process.env.JWT_SECRET || <span class="string">'57df6g7qh8avsr6gfia7hfevisr'</span>;
+<span class="keyword">const</span> secretKey = process.env.JWT_SECRET || <span class="string">'<string_clave_secreta_constante_del_servidor>'</span>;
 
 exports.verifyExercisesInTestAutomationPath = <span class="keyword">async</span> (req, res) => {
     <span class="keyword">try</span> {
@@ -980,6 +980,7 @@ app.use(cors({
   </div>
 </body>
 </html>
+
 
 
 
