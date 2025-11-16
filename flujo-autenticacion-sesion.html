@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  
+  <!-- Primary Meta Tags -->
+  <title>Flujo de autenticación y sesión Google Signin a través de correo | Tutorial Refactorii</title>
+  <meta name="title" content="Flujo de autenticación y sesión Google Signin a través de correo | Tutorial Refactorii">
+  <meta name="description" content="Tutorial completo sobre cómo implementar autenticación con Google Sign-In usando validación por correo electrónico. Aprende paso a paso con ejemplos de código en JavaScript y Node.js.">
+  <meta name="keywords" content="google sign in, autenticación google, login google, javascript, node.js, tutorial programación, refactorii, sesión usuario, jwt, oauth">
+  <meta name="author" content="Refactorii">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="language" content="Spanish">
+  <meta name="revisit-after" content="7 days">
+  <link rel="canonical" href="https://www.refactorii.com/flujo-autenticacion-sesion.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.refactorii.com/flujo-autenticacion-sesion.html">
+  <meta property="og:title" content="Flujo de autenticación y sesión Google Signin a través de correo">
+  <meta property="og:description" content="Tutorial completo sobre cómo implementar autenticación con Google Sign-In usando validación por correo electrónico. Aprende paso a paso con ejemplos de código.">
+  <meta property="og:image" content="https://www.refactorii.com/images/flujo-autenticacion-sesion-og.jpg">
+  <meta property="og:site_name" content="Refactorii">
+  <meta property="og:locale" content="es_ES">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.refactorii.com/flujo-autenticacion-sesion.html">
+  <meta property="twitter:title" content="Flujo de autenticación y sesión Google Signin a través de correo">
+  <meta property="twitter:description" content="Tutorial completo sobre cómo implementar autenticación con Google Sign-In usando validación por correo electrónico.">
+  <meta property="twitter:image" content="https://www.refactorii.com/images/flujo-autenticacion-sesion-og.jpg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/json/json.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #1f2937;
+      --light: #f9fafb;
+      --border: #e5e7eb;
+      --text: #374151;
+      --text-light: #6b7280;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    header .icon {
+      font-size: 3rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title .number {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .flow-diagram {
+      background: var(--light);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px 0;
+      position: relative;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 60px;
+      width: 2px;
+      height: calc(100% + 10px);
+      background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+      opacity: 0.3;
+    }
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .step-content {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 4px solid var(--primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .step-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .step-description {
+      color: var(--text-light);
+      margin-bottom: 15px;
+    }
+
+    .code-container {
+      margin: 15px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+
+    .code-header {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 8px 15px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .code-header::before {
+      content: '📄';
+      font-size: 1rem;
+    }
+
+    .CodeMirror {
+      height: auto;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .CodeMirror-scroll {
+      min-height: 100px;
+      max-height: 500px;
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      border-left: 4px solid #3b82f6;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .info-box.warning {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-left-color: var(--warning);
+    }
+
+    .info-box.success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      border-left-color: var(--success);
+    }
+
+    .info-box-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .comparison-table th {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .comparison-table td {
+      padding: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comparison-table tr:hover {
+      background: var(--light);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .badge-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .security-section {
+      background: var(--light);
+      padding: 30px;
+      border-radius: 15px;
+      margin: 30px 0;
+    }
+
+    .security-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .security-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--success);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 40px;
+      text-align: center;
+    }
+
+    footer p {
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      header {
+        padding: 40px 20px;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      header .icon {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1rem;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .section {
+        margin-bottom: 30px;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+        flex-wrap: wrap;
+      }
+
+      .section-title .number {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+
+      .flow-step {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .step-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+
+      .step-content {
+        padding: 15px;
+      }
+
+      .step-title {
+        font-size: 1.1rem;
+      }
+
+      .CodeMirror {
+        font-size: 0.8rem;
+      }
+
+      .code-container {
+        margin: 10px 0;
+      }
+
+      .code-header {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+      }
+
+      .comparison-table {
+        font-size: 0.85rem;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 10px;
+      }
+
+      .info-box {
+        padding: 15px;
+      }
+
+      .security-section {
+        padding: 20px;
+      }
+
+      footer {
+        padding: 20px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.2rem;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+      }
+
+      .step-title {
+        font-size: 1rem;
+      }
+
+      .comparison-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    .highlight {
+      background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        <span class="icon">🔐</span>
+        <span>Flujo de autenticación y sesión Google Signin a través de correo</span>
+      </h1>
+      <p>Sistema de autenticación con Google Sign-In validando por correo electrónico</p>
+    </header>
+
+    <div class="content">
+      <!-- Sección 1: Inicio de Sesión -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">1</span>
+          <span>Inicio de Sesión (Login)</span>
+        </h2>
+
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="step-icon">1</div>
+            <div class="step-content">
+              <div class="step-title">Usuario hace clic en "Iniciar sesión con Google"</div>
+              <div class="step-description">Google muestra el popup de autenticación</div>
+            </div>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-icon">2</div>
+            <div class="step-content">
+              <div class="step-title">Google devuelve JWT con datos del usuario</div>
+              <div class="step-description">El token contiene: email, nombre, foto, etc.</div>
+              <div class="code-container">
+                <div class="code-header">JavaScript - auth.js</div>
+                <textarea class="code-editor" data-mode="javascript">// auth.js - handleCredentialResponse()
+async function handleCredentialResponse(response) {
+    // 1. Decodificar JWT de Google
+    const responsePayload = decodeJwtResponse(response.credential);
+    // responsePayload contiene: email, name, picture, etc.
+}</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-icon">3</div>
+            <div class="step-content">
+              <div class="step-title">Guardar datos del usuario en localStorage</div>
+              <div class="code-container">
+                <div class="code-header">JavaScript - Guardar en localStorage</div>
+                <textarea class="code-editor" data-mode="javascript">const formData = {
+    Email: responsePayload.email,
+    FullName: responsePayload.name,
+    ImageURL: responsePayload.picture
+};
+
+localStorage.setItem("formData", JSON.stringify(formData));</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-icon">4</div>
+            <div class="step-content">
+              <div class="step-title">Llamar al backend para obtener/crear usuario</div>
+              <div class="code-container">
+                <div class="code-header">JavaScript - Obtener token del backend</div>
+                <textarea class="code-editor" data-mode="javascript">// Llamar al backend con el email
+const ok = await getUserByEmail(responsePayload.email);
+
+// Backend devuelve token JWT si el usuario existe
+if (data.tkn) {
+    const token = data.tkn;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiry = payload.exp * 1000;
+    
+    localStorage.setItem("refactorii_token", token);
+    localStorage.setItem("token_expiry", expiry);
+    localStorage.setItem("Email", payload.Email);
+}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 2: Validación de Sesión -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">2</span>
+          <span>Validación de Sesión en el Frontend</span>
+        </h2>
+
+        <div class="info-box">
+          <div class="info-box-title">¿Cuándo se valida?</div>
+          <p>Al cargar cualquier página de la aplicación, se ejecuta la función <span class="highlight">validarToken()</span> para verificar si el usuario está autenticado.</p>
+        </div>
+
+        <div class="code-container">
+          <div class="code-header">JavaScript - dynamic-route-editor.html</div>
+          <textarea class="code-editor" data-mode="javascript">// dynamic-route-editor.html - validarToken()
+function validarToken() {
+    const token = localStorage.getItem("refactorii_token");
+    const expiry = parseInt(localStorage.getItem("token_expiry") || "0", 10);
+    
+    // 1. ¿Hay token?
+    if (!token || !expiry) {
+        return false; // ❌ No autenticado
+    }
+    
+    // 2. ¿Token expirado?
+    if (Date.now() > expiry) {
+        alert("Tu sesión ha expirado. Por favor vuelve a iniciar sesión.");
+        localStorage.clear();
+        return false; // ❌ Sesión expirada
+    }
+    
+    // 3. Token válido
+    return true; // ✅ Autenticado
+}</textarea>
+        </div>
+
+        <div class="info-box success">
+          <div class="info-box-title">✅ Control de Acceso</div>
+          <p>Si el token es válido, se muestra la aplicación. Si no, se muestra el overlay de login con el botón de Google Sign-In.</p>
+        </div>
+      </section>
+
+      <!-- Sección 3: Validación en Backend -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">3</span>
+          <span>Validación en el Backend (Por Email)</span>
+        </h2>
+
+        <div class="info-box warning">
+          <div class="info-box-title">⚠️ Importante: Validación por Email, NO por Token</div>
+          <p>El backend valida las peticiones usando el <span class="highlight">email</span> enviado en las cabeceras, no el token. Esto se hace para evitar problemas de CORS.</p>
+        </div>
+
+        <div class="code-container">
+          <div class="code-header">Node.js - workflow.controller.js</div>
+          <textarea class="code-editor" data-mode="javascript">// workflow.controller.js - verifyExercisesInTestAutomationPath()
+exports.verifyExercisesInTestAutomationPath = async (req, res) => {
+    // 1. Obtener email de las cabeceras (NO del token)
+    const userEmail = req.headers['x-user-email']?.toLowerCase().trim();
+    const pathId = req.headers['x-path-id']?.trim();
+    
+    // 2. Validar que el usuario existe en la BD
+    const user = await GoogleSigninUser.findOne({ Email: userEmail }).lean();
+    if (!user) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    
+    // 3. Validar que el usuario tiene relación con una compañía
+    const relations = await CompanyGoogleSigninUser.find({
+        googlesigninuserId: user._id.toString()
+    });
+    if (relations.length === 0) {
+        return res.status(403).json({ error: 'No autorizado' });
+    }
+    
+    // 4. Buscar y devolver la ruta
+    const ruta = (user.testAutomationPlans || []).find(
+        r => r.id === Number(pathId)
+    );
+    
+    return res.status(200).json({ success: true, ruta });
+}</textarea>
+        </div>
+      </section>
+
+      <!-- Sección 4: ¿Por qué Email y no Token? -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">4</span>
+          <span>¿Por qué se valida por Email y no por Token?</span>
+        </h2>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th>Validación por Token</th>
+              <th>Validación por Email (Actual)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Configuración CORS</strong></td>
+              <td><span class="badge badge-danger">Compleja</span><br>Requiere permitir cabecera 'Authorization'</td>
+              <td><span class="badge badge-success">Simple</span><br>Solo requiere 'x-user-email' y 'x-path-id'</td>
+            </tr>
+            <tr>
+              <td><strong>Seguridad</strong></td>
+              <td><span class="badge badge-success">Alta</span><br>Token firmado y con expiración</td>
+              <td><span class="badge badge-warning">Media</span><br>Depende de validaciones en backend</td>
+            </tr>
+            <tr>
+              <td><strong>Problemas CORS</strong></td>
+              <td><span class="badge badge-danger">Sí</span><br>Navegador bloquea si no está configurado</td>
+              <td><span class="badge badge-success">No</span><br>Funciona sin problemas de CORS</td>
+            </tr>
+            <tr>
+              <td><strong>Validación Backend</strong></td>
+              <td>Verifica firma y expiración del token</td>
+              <td>Verifica existencia de usuario y permisos</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="info-box">
+          <div class="info-box-title">💡 Razones principales:</div>
+          <ul style="margin-left: 20px; margin-top: 10px;">
+            <li><strong>Problema CORS:</strong> Enviar <code>Authorization: Bearer &lt;token&gt;</code> requiere que el servidor permita esa cabecera en CORS, lo que complica la configuración.</li>
+            <li><strong>El email es suficiente:</strong> El backend valida que el usuario existe, tiene relación con compañía y acceso a los datos solicitados.</li>
+            <li><strong>El token se usa solo en frontend:</strong> Para control de sesión (mostrar/ocultar login) y validar que la sesión no ha expirado.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 5: Flujo Completo -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">5</span>
+          <span>Flujo Completo del Sistema</span>
+        </h2>
+
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="step-icon">🔑</div>
+            <div class="step-content">
+              <div class="step-title">1. Usuario hace Login con Google</div>
+              <div class="step-description">Google autentica y devuelve JWT con datos del usuario</div>
+            </div>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-icon">💾</div>
+            <div class="step-content">
+              <div class="step-title">2. Backend valida/crea usuario</div>
+              <div class="step-description">Busca usuario por email, si no existe lo crea, devuelve token JWT</div>
+            </div>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-icon">📦</div>
+            <div class="step-content">
+              <div class="step-title">3. Frontend guarda en localStorage</div>
+              <div class="step-description">
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                  <li><code>refactorii_token</code> (JWT)</li>
+                  <li><code>token_expiry</code> (fecha expiración)</li>
+                  <li><code>formData</code> (datos del usuario: email, nombre, etc.)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-icon">✅</div>
+            <div class="step-content">
+              <div class="step-title">4. Al cargar página: Validación de token</div>
+              <div class="step-description">
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                  <li>Si válido → muestra aplicación</li>
+                  <li>Si inválido → muestra login</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-step">
+            <div class="step-icon">🌐</div>
+            <div class="step-content">
+              <div class="step-title">5. Al hacer petición API</div>
+              <div class="step-description">
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                  <li>Frontend envía email en cabecera <code>'x-user-email'</code></li>
+                  <li><strong>NO</strong> envía token (por problemas CORS)</li>
+                  <li>Backend valida usuario por email</li>
+                  <li>Backend verifica permisos y devuelve datos</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 6: Seguridad -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">6</span>
+          <span>Aspectos de Seguridad</span>
+        </h2>
+
+        <div class="security-section">
+          <div class="security-item">
+            <div class="security-icon">✓</div>
+            <div>
+              <strong>Frontend:</strong> El token valida la sesión localmente. Si no hay token o está expirado, se muestra el login.
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">✓</div>
+            <div>
+              <strong>Backend:</strong> Valida que el usuario existe, tiene relación con compañía y acceso a los datos solicitados.
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">⚠</div>
+            <div>
+              <strong>Limitación actual:</strong> Si alguien conoce el email de otro usuario, podría hacer peticiones. Para mayor seguridad se puede:
+              <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Enviar el token como query param (menos seguro pero funciona con CORS)</li>
+                <li>Configurar CORS para permitir <code>Authorization</code> header</li>
+                <li>Usar un proxy en el mismo dominio</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 7: Resumen -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">7</span>
+          <span>Resumen</span>
+        </h2>
+
+        <div class="info-box success">
+          <div class="info-box-title">📋 Puntos clave del sistema:</div>
+          <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+            <li>✅ El <strong>token</strong> se guarda en <code>localStorage</code> después del login</li>
+            <li>✅ El <strong>frontend</strong> valida el token para control de sesión</li>
+            <li>✅ El <strong>backend</strong> valida por email (no por token) para evitar problemas CORS</li>
+            <li>✅ El <strong>email</strong> se envía en la cabecera <code>x-user-email</code></li>
+            <li>✅ El <strong>token NO</strong> se envía en las peticiones API</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>Documentación del sistema de autenticación Refactorii | Generado con ❤️</p>
+    </footer>
+  </div>
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Flujo de autenticación y sesión Google Signin a través de correo",
+    "description": "Tutorial completo sobre cómo implementar autenticación con Google Sign-In usando validación por correo electrónico. Aprende paso a paso con ejemplos de código en JavaScript y Node.js.",
+    "image": "https://www.refactorii.com/images/flujo-autenticacion-sesion-og.jpg",
+    "author": {
+      "@type": "Organization",
+      "name": "Refactorii",
+      "url": "https://www.refactorii.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Refactorii",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.refactorii.com/logo.png"
+      }
+    },
+    "datePublished": "2025-01-19",
+    "dateModified": "2025-01-19",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://www.refactorii.com/flujo-autenticacion-sesion.html"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "Google Sign-In Authentication"
+    },
+    "keywords": "google sign in, autenticación google, login google, javascript, node.js, tutorial programación",
+    "inLanguage": "es",
+    "educationalLevel": "Intermediate",
+    "learningResourceType": "Tutorial"
+  }
+  </script>
+
+  <script>
+    // Inicializar CodeMirror en todos los editores de código
+    document.addEventListener('DOMContentLoaded', () => {
+      const editors = document.querySelectorAll('.code-editor');
+      editors.forEach(textarea => {
+        const mode = textarea.getAttribute('data-mode') || 'javascript';
+        const editor = CodeMirror.fromTextArea(textarea, {
+          lineNumbers: true,
+          mode: mode,
+          theme: 'monokai',
+          readOnly: true,
+          lineWrapping: true,
+          indentUnit: 2,
+          tabSize: 2
+        });
+        
+        // Ajustar altura automáticamente
+        editor.setSize(null, 'auto');
+        const height = editor.doc.height;
+        editor.setSize(null, Math.min(height * 20 + 20, 500));
+      });
+    });
+  </script>
+</body>
+</html>
+
