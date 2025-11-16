@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  
+  <!-- Primary Meta Tags -->
+  <title>Guía Completa: Indexar Páginas en Google Search Console | Tutorial SEO Refactorii</title>
+  <meta name="title" content="Guía Completa: Indexar Páginas en Google Search Console | Tutorial SEO Refactorii">
+  <meta name="description" content="Guía paso a paso para indexar páginas en Google Search Console. Aprende cómo optimizar tu sitio para SEO, actualizar sitemaps, solicitar indexación y monitorear resultados.">
+  <meta name="keywords" content="google search console, seo, indexación google, sitemap, robots.txt, tutorial seo, refactorii, posicionamiento web">
+  <meta name="author" content="Refactorii">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="language" content="Spanish">
+  <meta name="revisit-after" content="7 days">
+  <link rel="canonical" href="https://www.refactorii.com/guia-google-search-console.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.refactorii.com/guia-google-search-console.html">
+  <meta property="og:title" content="Guía Completa: Indexar Páginas en Google Search Console">
+  <meta property="og:description" content="Guía paso a paso para indexar páginas en Google Search Console. Aprende cómo optimizar tu sitio para SEO.">
+  <meta property="og:image" content="https://www.refactorii.com/images/guia-seo-og.jpg">
+  <meta property="og:site_name" content="Refactorii">
+  <meta property="og:locale" content="es_ES">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.refactorii.com/guia-google-search-console.html">
+  <meta property="twitter:title" content="Guía Completa: Indexar Páginas en Google Search Console">
+  <meta property="twitter:description" content="Guía paso a paso para indexar páginas en Google Search Console. Aprende cómo optimizar tu sitio para SEO.">
+  <meta property="twitter:image" content="https://www.refactorii.com/images/guia-seo-og.jpg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #1f2937;
+      --light: #f9fafb;
+      --border: #e5e7eb;
+      --text: #374151;
+      --text-light: #6b7280;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    header .icon {
+      font-size: 3rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title .number {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      border-left: 4px solid #3b82f6;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .info-box.success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      border-left-color: var(--success);
+    }
+
+    .info-box.warning {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-left-color: var(--warning);
+    }
+
+    .info-box.danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border-left-color: var(--danger);
+    }
+
+    .info-box-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--dark);
+      font-size: 1.1rem;
+    }
+
+    .code-container {
+      margin: 15px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+
+    .code-header {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 8px 15px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .code-header::before {
+      content: '📄';
+      font-size: 1rem;
+    }
+
+    .CodeMirror {
+      height: auto;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .CodeMirror-scroll {
+      min-height: 100px;
+      max-height: 500px;
+    }
+
+    ul, ol {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    ul li, ol li {
+      margin-bottom: 8px;
+      line-height: 1.8;
+    }
+
+    .checklist {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .checklist li {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: var(--light);
+      border-radius: 6px;
+      border-left: 3px solid var(--success);
+    }
+
+    .checklist li::before {
+      content: '☐ ';
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+
+    .step-box {
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .step-number {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    .highlight {
+      background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: var(--danger);
+    }
+
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 40px;
+      text-align: center;
+    }
+
+    footer p {
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      header {
+        padding: 40px 20px;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      header .icon {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1rem;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .section {
+        margin-bottom: 30px;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+        flex-wrap: wrap;
+      }
+
+      .section-title .number {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+
+      .CodeMirror {
+        font-size: 0.8rem;
+      }
+
+      .code-container {
+        margin: 10px 0;
+      }
+
+      .code-header {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+      }
+
+      footer {
+        padding: 20px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.2rem;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        <span class="icon">🔍</span>
+        <span>Guía Completa: Indexar Páginas en Google Search Console</span>
+      </h1>
+      <p>Tutorial paso a paso para optimizar tu sitio y ganar posicionamiento en Google</p>
+    </header>
+
+    <div class="content">
+      <!-- Sección 1: Dónde publicar -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">1</span>
+          <span>¿Dónde publicar? ¿www.refactorii.com o GitHub Pages?</span>
+        </h2>
+
+        <div class="info-box success">
+          <div class="info-box-title">🎯 RESPUESTA DIRECTA: www.refactorii.com es MEJOR para SEO</div>
+          <p style="margin-top: 10px;"><strong>Para contenido de tutoriales y páginas educativas, SIEMPRE publica en www.refactorii.com</strong></p>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--dark);">✅ Por qué www.refactorii.com es MEJOR:</h3>
+        <ul>
+          <li><strong>Autoridad SEO concentrada:</strong> Toda la autoridad SEO se acumula en UN solo dominio</li>
+          <li><strong>Mejor para búsquedas:</strong> Google indexa mejor contenido en el mismo dominio</li>
+          <li><strong>Backlinks internos:</strong> Puedes enlazar entre tus tutoriales fácilmente</li>
+          <li><strong>Control total:</strong> Tienes control completo del servidor y optimización</li>
+        </ul>
+
+        <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--dark);">⚠️ Cuándo usar GitHub Pages:</h3>
+        <div class="info-box warning">
+          <div class="info-box-title">GitHub Pages es útil SOLO para:</div>
+          <ul>
+            <li>Demos interactivos (ejemplos de código ejecutables)</li>
+            <li>Ejemplos complementarios</li>
+            <li>Backup/Mirror del contenido</li>
+          </ul>
+        </div>
+
+        <div class="info-box danger">
+          <div class="info-box-title">🚫 NO uses GitHub Pages para:</div>
+          <ul>
+            <li>Tutoriales completos (usa www.refactorii.com)</li>
+            <li>Contenido principal que quieres posicionar</li>
+            <li>Páginas que quieres que aparezcan en Google</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 2: Proceso completo -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">2</span>
+          <span>Proceso Completo para Agregar una Nueva Página</span>
+        </h2>
+        
+        <div class="info-box success">
+          <div class="info-box-title">🎯 Resumen Rápido:</div>
+          <ol style="margin-top: 10px;">
+            <li><strong>Server.js:</strong> NO necesitas agregar rutas (express.static lo hace automáticamente)</li>
+            <li><strong>Subir archivo:</strong> Coloca el HTML en <code>/refactorii-platform/</code></li>
+            <li><strong>Sitemap.xml:</strong> Agrega la nueva URL</li>
+            <li><strong>robots.txt:</strong> Normalmente NO necesita cambios</li>
+            <li><strong>index.html:</strong> (Opcional) Agrega enlaces para mejor SEO</li>
+            <li><strong>Google Search Console:</strong> Inspeccionar y solicitar indexación</li>
+          </ol>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">1</span>Configuración del Servidor (server.js)</h3>
+          <div class="info-box success">
+            <div class="info-box-title">✅ BUENAS NOTICIAS: NO necesitas agregar rutas nuevas</div>
+            <p style="margin-top: 10px;">Si ya tienes configurado <code>express.static</code>, las páginas se sirven automáticamente.</p>
+          </div>
+          
+          <p style="margin-top: 15px;"><strong>Verifica que en tu server.js tengas:</strong></p>
+          <div class="code-container">
+            <div class="code-header">Node.js - server.js</div>
+            <textarea class="code-editor" data-mode="javascript">// Ruta para el index.html principal
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/refactorii-platform/index.html');
+});
+
+// Servir archivos estáticos desde refactorii-platform
+// Esto hace que CUALQUIER archivo HTML en /refactorii-platform/ 
+// sea accesible directamente sin agregar rutas
+app.use(express.static(__dirname + '/refactorii-platform'));</textarea>
+          </div>
+          
+          <div class="info-box" style="margin-top: 15px;">
+            <div class="info-box-title">💡 ¿Qué significa esto?</div>
+            <ul>
+              <li>Con <code>express.static</code>, cualquier archivo HTML que pongas en <code>/refactorii-platform/</code> será accesible automáticamente</li>
+              <li><strong>NO necesitas agregar rutas</strong> como <code>app.get('/flujo-autenticacion-sesion.html', ...)</code></li>
+              <li>Simplemente sube el archivo y será accesible en: <code>https://www.refactorii.com/nombre-archivo.html</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">2</span>Subir la Página al Servidor</h3>
+          <p><strong>Ubicación del archivo:</strong></p>
+          <div class="code-container">
+            <div class="code-header">Ruta del archivo</div>
+            <textarea class="code-editor" data-mode="text/plain">/refactorii-platform/flujo-autenticacion-sesion.html
+/refactorii-platform/flujo-autenticacion-token-jwt.html
+/refactorii-platform/guia-google-search-console.html</textarea>
+          </div>
+          <p style="margin-top: 15px;"><strong>Verificar acceso:</strong></p>
+          <ul>
+            <li>Abre: <code>https://www.refactorii.com/flujo-autenticacion-sesion.html</code></li>
+            <li>Abre: <code>https://www.refactorii.com/flujo-autenticacion-token-jwt.html</code></li>
+            <li>Deben cargar sin errores</li>
+          </ul>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">3</span>Actualizar sitemap.xml</h3>
+          <p>Agrega la nueva URL al sitemap.xml con este formato:</p>
+          <div class="code-container">
+            <div class="code-header">XML - sitemap.xml</div>
+            <textarea class="code-editor" data-mode="application/xml"><url>
+    <loc>https://www.refactorii.com/flujo-autenticacion-sesion.html</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refactorii.com/flujo-autenticacion-sesion.html?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refactorii.com/flujo-autenticacion-sesion.html?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refactorii.com/flujo-autenticacion-sesion.html"/>
+</url></textarea>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">4</span>Actualizar robots.txt (Opcional)</h3>
+          <div class="info-box">
+            <div class="info-box-title">💡 Normalmente NO necesitas cambiar robots.txt</div>
+            <p style="margin-top: 10px;">Si tu <code>robots.txt</code> ya tiene <code>Allow: /</code>, todas las páginas nuevas estarán permitidas automáticamente.</p>
+          </div>
+          <p style="margin-top: 15px;"><strong>Verifica que tu robots.txt tenga:</strong></p>
+          <div class="code-container">
+            <div class="code-header">robots.txt</div>
+            <textarea class="code-editor" data-mode="text/plain">User-agent: *
+Allow: /
+
+# Esto permite que Google rastree TODAS las páginas
+# incluyendo las nuevas que agregues</textarea>
+          </div>
+          <p style="margin-top: 15px;"><strong>Si NO tienes <code>Allow: /</code>, agrégalo al inicio del archivo.</strong></p>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">5</span>Actualizar index.html (Opcional pero Recomendado)</h3>
+          <div class="info-box success">
+            <div class="info-box-title">✅ Recomendación: Agregar enlaces en index.html</div>
+            <p style="margin-top: 10px;">Agregar enlaces a tus nuevas páginas en el index.html mejora la navegación y el SEO interno.</p>
+          </div>
+          <p style="margin-top: 15px;"><strong>Ejemplo de enlace a agregar:</strong></p>
+          <div class="code-container">
+            <div class="code-header">HTML - index.html</div>
+            <textarea class="code-editor" data-mode="text/html"><!-- En la sección de tutoriales o recursos -->
+<a href="/flujo-autenticacion-sesion.html" 
+   title="Flujo de autenticación Google Sign-In por correo">
+  Flujo de autenticación Google Sign-In por correo
+</a>
+
+<a href="/flujo-autenticacion-token-jwt.html" 
+   title="Flujo de autenticación Google Sign-In con JWT">
+  Flujo de autenticación Google Sign-In con JWT
+</a>
+
+<a href="/guia-google-search-console.html" 
+   title="Guía de Google Search Console">
+  Guía de Google Search Console
+</a></textarea>
+          </div>
+          <p style="margin-top: 15px;"><strong>Beneficios:</strong></p>
+          <ul>
+            <li>Mejora la navegación del sitio</li>
+            <li>Google encuentra las páginas más rápido (crawling interno)</li>
+            <li>Mejor distribución de autoridad SEO (link juice)</li>
+            <li>Mejor experiencia de usuario</li>
+          </ul>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">6</span>Google Search Console - Indexar Nueva Página</h3>
+          <ol>
+            <li>Ve a: <a href="https://search.google.com/search-console" target="_blank">https://search.google.com/search-console</a></li>
+            <li>Selecciona la propiedad: <strong>www.refactorii.com</strong></li>
+            <li>Menú lateral: <strong>"Inspección de URL"</strong> o <strong>"URL Inspection"</strong></li>
+            <li>Pega la URL completa: <code>https://www.refactorii.com/flujo-autenticacion-sesion.html</code></li>
+            <li>Haz clic en <strong>"Inspeccionar URL"</strong></li>
+            <li>Después de la inspección, haz clic en <strong>"Solicitar indexación"</strong></li>
+          </ol>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">7</span>Actualizar Sitemap en Search Console</h3>
+          <ol>
+            <li>Menú lateral: <strong>"Sitemaps"</strong> o <strong>"Mapas del sitio"</strong></li>
+            <li>Verifica que aparece: <code>https://www.refactorii.com/sitemap.xml</code></li>
+            <li>Si NO aparece, haz clic en <strong>"Agregar un nuevo sitemap"</strong></li>
+            <li>Ingresa: <code>sitemap.xml</code> y haz clic en <strong>"Enviar"</strong></li>
+            <li>Para forzar re-indexación: Haz clic en los tres puntos (⋮) junto al sitemap y selecciona <strong>"Probar sitemap"</strong></li>
+          </ol>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">8</span>Verificar que Google Puede Rastrear</h3>
+          <p><strong>Verificar robots.txt:</strong></p>
+          <p>URL: <code>https://www.refactorii.com/robots.txt</code></p>
+          <p>Debe permitir el acceso:</p>
+          <div class="code-container">
+            <div class="code-header">robots.txt</div>
+            <textarea class="code-editor" data-mode="text/plain">User-agent: *
+Allow: /</textarea>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;"><span class="step-number">9</span>Monitorear Indexación</h3>
+          <p><strong>En Search Console - Cobertura:</strong></p>
+          <ul>
+            <li>Menú lateral: <strong>"Cobertura"</strong> o <strong>"Coverage"</strong></li>
+            <li>Busca tu nueva página en la lista de páginas válidas</li>
+          </ul>
+          <p style="margin-top: 15px;"><strong>Búsqueda en Google (después de 1-7 días):</strong></p>
+          <div class="code-container">
+            <div class="code-header">Búsqueda</div>
+            <textarea class="code-editor" data-mode="text/plain">site:refactorii.com flujo-autenticacion-sesion</textarea>
+          </div>
+          <p style="margin-top: 10px;">Si aparece = ✅ Indexada correctamente</p>
+        </div>
+      </section>
+
+      <!-- Sección 3: Checklist -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">3</span>
+          <span>Checklist Rápido para Cada Nueva Página</span>
+        </h2>
+
+        <ul class="checklist">
+          <li>✅ Verificar que server.js tiene <code>express.static</code> configurado (NO agregar rutas nuevas)</li>
+          <li>✅ Página subida a <code>/refactorii-platform/nombre-pagina.html</code></li>
+          <li>✅ Página accesible en <code>https://www.refactorii.com/nombre-pagina.html</code></li>
+          <li>✅ Meta tags SEO completos (title, description, keywords)</li>
+          <li>✅ Canonical URL apuntando a refactorii.com</li>
+          <li>✅ Schema.org structured data incluido</li>
+          <li>✅ Open Graph tags para redes sociales</li>
+          <li>✅ Responsive design funcionando</li>
+          <li>✅ Sitemap.xml actualizado con la nueva URL</li>
+          <li>✅ robots.txt permite el acceso (verificar <code>Allow: /</code>)</li>
+          <li>✅ (Opcional) Agregar enlace en index.html para mejor SEO interno</li>
+          <li>✅ Google Search Console: URL inspeccionada</li>
+          <li>✅ Google Search Console: Indexación solicitada</li>
+          <li>✅ Sitemap re-enviado en Search Console</li>
+          <li>⏳ Esperar 1-7 días para indexación</li>
+          <li>✅ Verificar en Google: <code>site:refactorii.com nombre-pagina</code></li>
+        </ul>
+      </section>
+
+      <!-- Sección 4: Estrategia SEO -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">4</span>
+          <span>Estrategia de Contenido para SEO</span>
+        </h2>
+
+        <div class="info-box">
+          <div class="info-box-title">1. Crea contenido que resuelva problemas reales</div>
+          <ul>
+            <li>"Cómo hacer X en JavaScript"</li>
+            <li>"Errores comunes en Node.js y soluciones"</li>
+            <li>"Tutorial paso a paso de Y"</li>
+          </ul>
+        </div>
+
+        <div class="info-box success">
+          <div class="info-box-title">2. Optimiza cada página para UNA palabra clave principal</div>
+          <ul>
+            <li>Título: Incluye la palabra clave</li>
+            <li>H1: Incluye la palabra clave</li>
+            <li>Descripción: Incluye variaciones de la palabra clave</li>
+            <li>Contenido: Menciona la palabra clave naturalmente</li>
+          </ul>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title">3. Publica regularmente</div>
+          <ul>
+            <li>1 página nueva cada día = 30 páginas/mes</li>
+            <li>En 3-6 meses tendrás 90-180 páginas indexadas</li>
+            <li>Esto aumenta significativamente el tráfico</li>
+          </ul>
+        </div>
+
+        <div class="info-box success">
+          <div class="info-box-title">4. Interconecta las páginas</div>
+          <ul>
+            <li>En cada página, enlaza a páginas relacionadas</li>
+            <li>Crea una estructura lógica de contenido</li>
+            <li>Ejemplo: "Flujo de autenticación" → enlaza a "JWT explicado" → enlaza a "Node.js tutorial"</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 5: Comandos útiles -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">5</span>
+          <span>Comandos Útiles para Verificar</span>
+        </h2>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;">Verificar si está indexada:</h3>
+          <div class="code-container">
+            <div class="code-header">Búsqueda en Google</div>
+            <textarea class="code-editor" data-mode="text/plain">site:refactorii.com flujo-autenticacion-sesion</textarea>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;">Verificar meta tags:</h3>
+          <p>Herramienta online: <a href="https://www.opengraph.xyz/" target="_blank">https://www.opengraph.xyz/</a></p>
+          <p>Pega la URL y verifica todos los meta tags</p>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;">Verificar Schema.org:</h3>
+          <p>Google Rich Results Test: <a href="https://search.google.com/test/rich-results" target="_blank">https://search.google.com/test/rich-results</a></p>
+          <p>Pega la URL y verifica el Schema.org</p>
+        </div>
+
+        <div class="step-box">
+          <h3 style="margin-bottom: 15px;">Verificar velocidad móvil:</h3>
+          <p>PageSpeed Insights: <a href="https://pagespeed.web.dev/" target="_blank">https://pagespeed.web.dev/</a></p>
+          <p>Pega la URL y verifica rendimiento</p>
+        </div>
+      </section>
+
+      <!-- Sección 6: Métricas -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">6</span>
+          <span>Métricas a Monitorear</span>
+        </h2>
+
+        <div class="info-box">
+          <div class="info-box-title">En Google Search Console, revisa semanalmente:</div>
+          <ul>
+            <li><strong>Rendimiento:</strong> Impresiones, Clics, CTR, Posición promedio</li>
+            <li><strong>Cobertura:</strong> Páginas válidas (debe aumentar), Errores (debe disminuir)</li>
+            <li><strong>Búsquedas:</strong> Qué palabras clave traen tráfico, Qué páginas son más visitadas</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 7: Errores comunes -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">7</span>
+          <span>Errores Comunes a Evitar</span>
+        </h2>
+
+        <div class="info-box danger">
+          <ul>
+            <li>❌ No actualizar el sitemap después de crear una página</li>
+            <li>❌ No solicitar indexación en Search Console</li>
+            <li>❌ Duplicar contenido sin canonical URL</li>
+            <li>❌ Meta description muy corta o muy larga (ideal: 150-160 caracteres)</li>
+            <li>❌ Títulos duplicados en múltiples páginas</li>
+            <li>❌ Contenido muy corto (mínimo 300 palabras recomendado)</li>
+            <li>❌ No usar H1, H2, H3 para estructura</li>
+            <li>❌ Imágenes sin alt text</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 8: Resumen -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">8</span>
+          <span>Resumen: Qué Hacer HOY</span>
+        </h2>
+
+        <div class="info-box success">
+          <div class="info-box-title">Para cada nueva página (ej: flujo-autenticacion-sesion.html):</div>
+          <ol>
+            <li>✅ Verificar que server.js tiene <code>express.static</code> (NO necesita cambios)</li>
+            <li>✅ Página ya optimizada (SEO, responsive, Schema.org)</li>
+            <li>⏳ Subir archivo a <code>/refactorii-platform/nombre-pagina.html</code></li>
+            <li>⏳ Verificar acceso en navegador: <code>https://www.refactorii.com/nombre-pagina.html</code></li>
+            <li>⏳ Actualizar sitemap.xml con la nueva URL</li>
+            <li>⏳ (Opcional) Agregar enlace en index.html</li>
+            <li>⏳ Google Search Console: Inspeccionar URL → Solicitar indexación</li>
+            <li>⏳ Google Search Console: Re-enviar sitemap.xml</li>
+            <li>⏳ Esperar 1-7 días</li>
+            <li>⏳ Verificar: <code>site:refactorii.com nombre-pagina</code></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Sección 9: Próximos pasos -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="number">9</span>
+          <span>Próximos Pasos</span>
+        </h2>
+
+        <div class="info-box">
+          <div class="info-box-title">Para ganar posicionamiento:</div>
+          <ol>
+            <li>Crea 1 página nueva cada día con tutoriales de programación</li>
+            <li>Optimiza cada página con esta misma estructura SEO</li>
+            <li>Interconecta las páginas con enlaces internos</li>
+            <li>Comparte en LinkedIn con enlace a tu página</li>
+            <li>Responde en StackOverflow con enlaces a tus tutoriales (solo si aporta valor)</li>
+            <li>Monitorea Search Console semanalmente</li>
+          </ol>
+          <p style="margin-top: 15px; font-weight: 600;">En 3-6 meses verás resultados significativos. 🎯</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>Guía de SEO y Google Search Console | Refactorii | Generado con ❤️</p>
+    </footer>
+  </div>
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Guía Completa: Indexar Páginas en Google Search Console",
+    "description": "Guía paso a paso para indexar páginas en Google Search Console. Aprende cómo optimizar tu sitio para SEO, actualizar sitemaps, solicitar indexación y monitorear resultados.",
+    "image": "https://www.refactorii.com/images/guia-seo-og.jpg",
+    "author": {
+      "@type": "Organization",
+      "name": "Refactorii",
+      "url": "https://www.refactorii.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Refactorii",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.refactorii.com/logo.png"
+      }
+    },
+    "datePublished": "2025-01-19",
+    "dateModified": "2025-01-19",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://www.refactorii.com/guia-google-search-console.html"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "Google Search Console SEO"
+    },
+    "keywords": "google search console, seo, indexación google, sitemap, robots.txt, tutorial seo",
+    "inLanguage": "es",
+    "educationalLevel": "Intermediate",
+    "learningResourceType": "Tutorial"
+  }
+  </script>
+
+  <script>
+    // Inicializar CodeMirror en todos los editores de código
+    document.addEventListener('DOMContentLoaded', () => {
+      const editors = document.querySelectorAll('.code-editor');
+      editors.forEach(textarea => {
+        const mode = textarea.getAttribute('data-mode') || 'text/plain';
+        const editor = CodeMirror.fromTextArea(textarea, {
+          lineNumbers: true,
+          mode: mode,
+          theme: 'monokai',
+          readOnly: true,
+          lineWrapping: true,
+          indentUnit: 2,
+          tabSize: 2
+        });
+        
+        // Ajustar altura automáticamente
+        editor.setSize(null, 'auto');
+        const height = editor.doc.height;
+        editor.setSize(null, Math.min(height * 20 + 20, 500));
+      });
+    });
+  </script>
+</body>
+</html>
+
