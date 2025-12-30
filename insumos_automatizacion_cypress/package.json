@@ -1,0 +1,26 @@
+{
+  "name": "system-health-check",
+  "version": "1.0.0",
+  "description": "Plan de automatización E2E con Cypress para validación completa de sistema DEV",
+  "main": "index.js",
+  "scripts": {
+    "test:e2e": "cypress run --spec cypress/e2e/system-health-check.cy.js",
+    "test:open": "cypress open",
+    "test:report": "npx mochawesome-merge cypress/reports/*.json > cypress/reports/report.json && npx marge cypress/reports/report.json --reportDir cypress/reports/html"
+  },
+  "keywords": [
+    "cypress",
+    "e2e",
+    "automation",
+    "testing",
+    "health-check"
+  ],
+  "author": "Equipo QA",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^12.17.0",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.4.1",
+    "mochawesome-report-generator": "^6.2.0"
+  }
+}
