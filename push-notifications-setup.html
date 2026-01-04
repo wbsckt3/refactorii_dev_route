@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Notificaciones Push - RealDB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            color: #1e40af;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            font-size: 1.4rem;
+            color: #3b82f6;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            color: #475569;
+            font-size: 1rem;
+        }
+
+        .section ul, .section ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section li {
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block code {
+            color: #86efac;
+        }
+
+        .code-inline {
+            background: #f1f5f9;
+            color: #dc2626;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .checklist li:before {
+            content: "☐ ";
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .footer {
+            background: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Notificaciones Push Nativas</h1>
+            <p>Guía completa de configuración para RealDB</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>✅ ¿Qué son las Notificaciones Push?</h2>
+                <p>Las notificaciones push nativas del navegador permiten enviar notificaciones a los usuarios <strong>incluso cuando la aplicación está cerrada</strong>. Funcionan en segundo plano usando Service Workers.</p>
+                
+                <div class="alert alert-success">
+                    <strong>Ventajas:</strong>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li><strong>Funciona sin app abierta:</strong> Notificaciones incluso cuando el navegador está cerrado</li>
+                        <li><strong>Nativo del navegador:</strong> No requiere apps externas (Telegram, WhatsApp)</li>
+                        <li><strong>Gratis:</strong> Sin límites ni costos</li>
+                        <li><strong>Multiplataforma:</strong> Funciona en Chrome, Firefox, Edge, Safari</li>
+                        <li><strong>Privacidad:</strong> El usuario controla los permisos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔑 Paso 1: Generar Claves VAPID</h2>
+                <p>Las claves VAPID son necesarias para autenticar las notificaciones push. Genera un par de claves:</p>
+                
+                <div class="code-block">
+<code>cd modelos_back
+npx web-push generate-vapid-keys</code>
+                </div>
+
+                <p>Esto generará algo como:</p>
+                <div class="code-block">
+<code>Public Key: BEl62iUYgUivxIkv69yViEuiBIa40HIeF8vUvKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8
+Private Key: 8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8</code>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 Paso 2: Configurar Variables de Entorno</h2>
+                <p>Crea o actualiza el archivo <span class="code-inline">.env</span> en <span class="code-inline">modelos_back/</span>:</p>
+                
+                <div class="code-block">
+<code># VAPID Keys para notificaciones push
+VAPID_PUBLIC_KEY=tu_public_key_aqui
+VAPID_PRIVATE_KEY=tu_private_key_aqui
+VAPID_EMAIL=tu-email@example.com</code>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Ejemplo:</strong>
+                    <div class="code-block" style="margin-top: 10px;">
+<code>VAPID_PUBLIC_KEY=BEl62iUYgUivxIkv69yViEuiBIa40HIeF8vUvKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8
+VAPID_PRIVATE_KEY=8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8vKX8
+VAPID_EMAIL=admin@refactorii.com</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 Paso 3: Instalar Dependencias</h2>
+                <div class="code-block">
+<code>cd modelos_back
+npm install</code>
+                </div>
+                <p>Esto instalará <span class="code-inline">web-push</span> que es necesario para enviar notificaciones.</p>
+            </div>
+
+            <div class="section">
+                <h2>🚀 Paso 4: Configurar Service Worker</h2>
+                <p>El Service Worker (<span class="code-inline">public/sw.js</span>) ya está creado. Solo asegúrate de que:</p>
+                <ol>
+                    <li>El archivo esté en la carpeta <span class="code-inline">public/</span> de tu proyecto</li>
+                    <li>El servidor sirva archivos estáticos desde <span class="code-inline">public/</span></li>
+                </ol>
+                <div class="alert alert-info">
+                    Si usas Vite, el Service Worker debe estar en <span class="code-inline">public/sw.js</span> y se servirá automáticamente.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Paso 5: Agregar Componente en el Perfil</h2>
+                <p>Agrega el componente <span class="code-inline">PushNotificationsSetup.vue</span> en el perfil del usuario:</p>
+                
+                <div class="code-block">
+<code>&lt;!-- En AdminProfile.vue o TechnicianProfile.vue --&gt;
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;!-- ... otros componentes ... --&gt;
+    
+    &lt;PushNotificationsSetup /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import PushNotificationsSetup from '../components/PushNotificationsSetup.vue';
+// ...
+&lt;/script&gt;</code>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ Paso 6: Probar</h2>
+                <ol>
+                    <li><strong>Inicia el servidor:</strong>
+                        <div class="code-block">
+<code>npm start</code>
+                        </div>
+                    </li>
+                    <li><strong>Abre la aplicación en el navegador</strong></li>
+                    <li><strong>Ve al perfil del usuario</strong> y haz clic en "Activar Notificaciones"</li>
+                    <li><strong>Acepta el permiso</strong> cuando el navegador lo solicite</li>
+                    <li><strong>Cierra la aplicación</strong> y crea una solicitud/propuesta</li>
+                    <li><strong>Deberías recibir una notificación</strong> incluso con la app cerrada</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h2>🔧 Cómo Funciona</h2>
+                <h3>Flujo Completo:</h3>
+                <ol>
+                    <li><strong>Usuario activa notificaciones:</strong>
+                        <ul>
+                            <li>El navegador solicita permiso</li>
+                            <li>Se registra el Service Worker</li>
+                            <li>Se crea una suscripción push</li>
+                            <li>La suscripción se guarda en el servidor</li>
+                        </ul>
+                    </li>
+                    <li><strong>Usuario se conecta:</strong>
+                        <ul>
+                            <li>La suscripción se envía al servidor en la autenticación del socket</li>
+                            <li>Se guarda asociada al <span class="code-inline">userId</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Se crea/actualiza solicitud/propuesta:</strong>
+                        <ul>
+                            <li>Si el usuario está conectado: Notificación por Socket.io</li>
+                            <li>Si el usuario tiene suscripción push: Notificación push (incluso si está desconectado)</li>
+                            <li><strong>Ambas se envían siempre</strong></li>
+                        </ul>
+                    </li>
+                    <li><strong>Usuario recibe notificación:</strong>
+                        <ul>
+                            <li>Si la app está abierta: Notificación en la app</li>
+                            <li>Si la app está cerrada: Notificación del sistema operativo</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h2>📱 Requisitos del Navegador</h2>
+                <ul>
+                    <li><span class="badge badge-success">✅ Chrome/Edge:</span> Totalmente soportado</li>
+                    <li><span class="badge badge-success">✅ Firefox:</span> Totalmente soportado</li>
+                    <li><span class="badge badge-success">✅ Safari:</span> Soportado (iOS 16.4+)</li>
+                    <li><span class="badge badge-warning">⚠️ Opera:</span> Soportado</li>
+                    <li><span class="badge badge-error">❌ Internet Explorer:</span> No soportado</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>🔐 Seguridad</h2>
+                <ul>
+                    <li>Las claves VAPID son públicas (puedes exponer la clave pública)</li>
+                    <li>La clave privada debe mantenerse secreta (solo en el servidor)</li>
+                    <li>Las notificaciones están encriptadas end-to-end</li>
+                    <li>El usuario puede revocar permisos en cualquier momento</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>🆘 Solución de Problemas</h2>
+                
+                <h3>Error: "Service Worker registration failed"</h3>
+                <ul>
+                    <li>Verifica que <span class="code-inline">public/sw.js</span> exista</li>
+                    <li>Verifica que el servidor sirva archivos estáticos</li>
+                    <li>Usa HTTPS en producción (requerido para Service Workers)</li>
+                </ul>
+
+                <h3>Error: "VAPID keys not set"</h3>
+                <ul>
+                    <li>Genera las claves con <span class="code-inline">npx web-push generate-vapid-keys</span></li>
+                    <li>Configúralas en el archivo <span class="code-inline">.env</span></li>
+                </ul>
+
+                <h3>No recibo notificaciones</h3>
+                <ol>
+                    <li>Verifica que el usuario haya activado las notificaciones</li>
+                    <li>Verifica que el navegador tenga permisos</li>
+                    <li>Revisa la consola del navegador para errores</li>
+                    <li>Verifica que el Service Worker esté registrado (DevTools > Application > Service Workers)</li>
+                </ol>
+
+                <h3>Notificaciones solo funcionan en HTTPS</h3>
+                <ul>
+                    <li>En desarrollo local (<span class="code-inline">localhost</span>) funciona con HTTP</li>
+                    <li>En producción necesitas HTTPS</li>
+                    <li>Usa un servicio como ngrok para probar en desarrollo</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>📚 Recursos</h2>
+                <ul>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Push_API" target="_blank">Web Push API Documentation</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API" target="_blank">Service Workers Guide</a></li>
+                    <li><a href="https://www.npmjs.com/package/web-push" target="_blank">web-push npm package</a></li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>✅ Checklist</h2>
+                <ul class="checklist">
+                    <li>Claves VAPID generadas</li>
+                    <li>Variables de entorno configuradas</li>
+                    <li>Dependencias instaladas (<span class="code-inline">npm install</span>)</li>
+                    <li>Service Worker en <span class="code-inline">public/sw.js</span></li>
+                    <li>Componente agregado en el perfil</li>
+                    <li>Probado en navegador compatible</li>
+                    <li>Notificaciones funcionando</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>RealDB</strong> - Sistema de Notificaciones Push</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">© 2024 RealDB Team</p>
+        </div>
+    </div>
+</body>
+</html>
+
