@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación de Consultas SQL - Validaciones Auditoría Transporte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .toc h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #495057;
+            text-decoration: none;
+            padding: 5px 10px;
+            display: inline-block;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .toc a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .validation-section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+            scroll-margin-top: 20px;
+        }
+
+        .validation-section h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .validation-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .query-block {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .query-block h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .file-path {
+            background: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        .badge-postgres {
+            background: #336791;
+            color: white;
+        }
+
+        .badge-stone {
+            background: #c7254e;
+            color: white;
+        }
+
+        .badge-herinco {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-memory {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .badge-jpql {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .badge-native {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-block .keyword {
+            color: #c678dd;
+        }
+
+        .code-block .string {
+            color: #98c379;
+        }
+
+        .code-block .comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .code-block .annotation {
+            color: #61afef;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            color: #1976D2;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tables-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tables-list li {
+            background: #f8f9fa;
+            padding: 8px 15px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            border-left: 3px solid #667eea;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .summary-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .summary-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .summary-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .repo-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .repo-list h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .repo-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .repo-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border-left: 3px solid #667eea;
+        }
+
+        .notes-section {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .notes-section h2 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .notes-section ol {
+            padding-left: 25px;
+        }
+
+        .notes-section li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        .notes-section strong {
+            color: #856404;
+        }
+
+        .no-query {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .no-query-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .validation-section {
+                padding: 20px;
+            }
+
+            .code-block {
+                font-size: 0.8em;
+                padding: 15px;
+            }
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-size: 1.5em;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Ubicación de Consultas SQL</h1>
+            <p>Validaciones del Proceso de Auditoría de Transporte</p>
+        </header>
+
+        <div class="content">
+            <div class="toc">
+                <h2>📑 Índice de Contenido</h2>
+                <ul>
+                    <li><a href="#val1">Validación 1: Servicio no facturado previamente</a></li>
+                    <li><a href="#val2">Validación 2: Asignación transportadora</a></li>
+                    <li><a href="#val3">Validación 3: Soporte de entrega</a></li>
+                    <li><a href="#val4">Validación 4: Cantidad de piezas</a></li>
+                    <li><a href="#val5">Validación 5: Tarifa pactada</a></li>
+                    <li><a href="#val6">Validación 6: Valor declarado</a></li>
+                    <li><a href="#val7">Validación 7: Tasa de manejo</a></li>
+                    <li><a href="#val8">Validación 8: Vigencia contrato</a></li>
+                    <li><a href="#resumen">Resumen de Archivos</a></li>
+                    <li><a href="#repositorios">Ubicación de Repositorios</a></li>
+                    <li><a href="#notas">Notas Importantes</a></li>
+                </ul>
+            </div>
+
+            <!-- Validación 1 -->
+            <section id="val1" class="validation-section">
+                <h2><span class="validation-number">1</span> El servicio no debió ser facturado previamente</h2>
+                
+                <div class="query-block">
+                    <h3>Consulta SQL</h3>
+                    <div class="file-path">src/main/java/co/org/cohan/msalogistics/postgres/repository/PrefacturaAuditoriaTransporteRepository.java</div>
+                    <div style="margin: 10px 0;">
+                        <span class="badge badge-jpql">JPQL</span>
+                        <span class="badge badge-postgres">PostgreSQL</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>Método:</strong> findGuiaNumbersFacturadas()<br>
+                        <strong>Líneas:</strong> 82-90
+                    </div>
+                    <div class="code-block">
+<span class="annotation">@Query</span>(<span class="string">"SELECT DISTINCT p.numeroGuia FROM PrefacturaAuditoriaTransporte p " +
+       "JOIN p.cargueAuditoriaTransporte c " +
+       "WHERE p.eliminado = false " +
+       "AND c.eliminado = false " +
+       "AND c.numeroFactura IS NOT NULL " +
+       "AND c.numeroFactura != '' " +
+       "AND p.numeroGuia IS NOT NULL " +
+       "AND (p.inconsistencia IS NULL OR p.inconsistencia = '')"</span>)
+<span class="keyword">List</span>&lt;<span class="keyword">Long</span>&gt; findGuiaNumbersFacturadas();
+                    </div>
+                    <div class="info-box">
+                        <strong>Tablas involucradas:</strong>
+                        <ul class="tables-list">
+                            <li>prefactura_auditoria_transporte (alias p)</li>
+                            <li>cargue_auditoria_transporte (alias c)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validación 2 -->
+            <section id="val2" class="validation-section">
+                <h2><span class="validation-number">2</span> El servicio debe estar asignado a la transportadora</h2>
+                
+                <div class="query-block">
+                    <h3>Consulta 1: Obtener consecutivo y tipo de transacción (PostgreSQL)</h3>
+                    <div class="file-path">src/main/java/co/org/cohan/msalogistics/postgres/repository/SoporteAuditoriaTransporteRepository.java</div>
+                    <div style="margin: 10px 0;">
+                        <span class="badge badge-native">Nativa</span>
+                        <span class="badge badge-postgres">PostgreSQL</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>Método:</strong> obtenerConsecutivoYTipoTransaccionPorGuia()<br>
+                        <strong>Líneas:</strong> 225-234
+                    </div>
+                    <div class="code-block">
+<span class="annotation">@Query</span>(value = <span class="string">"""
+    SELECT 
+        COALESCE(CAST(et.consecutivo AS TEXT), '') AS consecutivo,
+        COALESCE(CAST(et.tipo_transaccion AS TEXT), '') AS tipoTransaccion
+    FROM public.encabezado_tracking et
+    WHERE CAST(et.numero_guia AS TEXT) = :numeroGuia
+      AND et.numero_guia IS NOT NULL
+    LIMIT 1
+    """</span>, nativeQuery = <span class="keyword">true</span>)
+<span class="keyword">Object</span>[] obtenerConsecutivoYTipoTransaccionPorGuia(<span class="annotation">@Param</span>(<span class="string">"numeroGuia"</span>) <span class="keyword">String</span> numeroGuia);
+                    </div>
+                </div>
+
+                <div class="query-block">
+                    <h3>Consulta 2: Obtener NIT de transportadora (Stone)</h3>
+                    <div class="file-path">src/main/java/co/org/cohan/msalogistics/stone/repository/HdHiaspRepository.java</div>
+                    <div style="margin: 10px 0;">
+                        <span class="badge badge-native">Nativa</span>
+                        <span class="badge badge-stone">Stone (SQL Server)</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>Método:</strong> obtenerNitTransportadoraPorConsecutivoYTipoPedido()<br>
+                        <strong>Líneas:</strong> 53-58
+                    </div>
+                    <div class="code-block">
+<span class="annotation">@Query</span>(value = <span class="string">"SELECT TOP 1 CAST(U.CED_USUA AS VARCHAR(50)) AS NIT " +
+        "FROM HD_HIASP H WITH (NOLOCK) " +
+        "JOIN HD_USUA U WITH (NOLOCK) ON H.USR_TRAN = U.COD_USUA " +
+        "WHERE H.RMT_CAPE = :rmtCape AND H.TIP_PEDI = :tipPedi"</span>, 
+        nativeQuery = <span class="keyword">true</span>)
+<span class="keyword">String</span> obtenerNitTransportadoraPorConsecutivoYTipoPedido(<span class="annotation">@Param</span>(<span class="string">"rmtCape"</span>) <span class="keyword">String</span> rmtCape, <span class="annotation">@Param</span>(<span class="string">"tipPedi"</span>) <span class="keyword">String</span> tipPedi);
+                    </div>
+                    <div class="info-box">
+                        <strong>Tablas involucradas:</strong>
+                        <ul class="tables-list">
+                            <li>HD_HIASP (alias H)</li>
+                            <li>HD_USUA (alias U)</li>
+                        </ul>
+                    </div>
+                    <div class="warning-box">
+                        <strong>⚠️ Nota especial:</strong> Para tipo de transacción 'D' (Domicilio), se usa NIT fijo <code>900702986</code> sin consultar Stone.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validación 3 -->
+            <section id="val3" class="validation-section">
+                <h2><span class="validation-number">3</span> El servicio debe contar con un soporte de entrega en Herincohan</h2>
+                
+                <div class="query-block">
+                    <h3>Consulta SQL</h3>
+                    <div class="file-path">src/main/java/co/org/cohan/msalogistics/postgres/repository/SoporteAuditoriaTransporteRepository.java</div>
+                    <div style="margin: 10px 0;">
+                        <span class="badge badge-native">Nativa</span>
+                        <span class="badge badge-postgres">PostgreSQL</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>Método:</strong> obtenerNombresSoportesPorGuias()<br>
+                        <strong>Líneas:</strong> 150-172
+                    </div>
+                    <div class="code-block">
+<span class="annotation">@Query</span>(value = <span class="string">"""
+    WITH estados AS (
+        SELECT MAX(dt.id_cuerpo) AS id_detalle, dt.id_tracking
+        FROM detalle_tracking dt
+        GROUP BY dt.id_tracking
+    )
+    SELECT DISTINCT
+        et.numero_guia,
+        COALESCE(s.nombre_archivo, fe.firma) AS resultado,
+        CASE 
+            WHEN s.nombre_archivo IS NOT NULL THEN 'SOPORTE'
+            WHEN fe.firma IS NOT NULL THEN 'FIRMA'
+            ELSE 'DESCONOCIDO'
+        END AS tipo
+    FROM public.encabezado_tracking et
+    LEFT JOIN estados ON estados.id_tracking = et.id_tracking
+    LEFT JOIN public.detalle_tracking dt ON dt.id_cuerpo = estados.id_detalle
+    LEFT JOIN public.soportes s ON s.id_soporte = dt.id_soporte
+    LEFT JOIN public.firma_entregas fe ON fe.id_firma = et.id_firma
+    WHERE et.numero_guia IN (:numerosGuia)
+      AND (s.nombre_archivo IS NOT NULL OR fe.firma IS NOT NULL);
+    """</span>, nativeQuery = <span class="keyword">true</span>)
+<span class="keyword">List</span>&lt;<span class="keyword">Object</span>[]&gt; obtenerNombresSoportesPorGuias(<span class="annotation">@Param</span>(<span class="string">"numerosGuia"</span>) <span class="keyword">List</span>&lt;<span class="keyword">String</span>&gt; numerosGuia);
+                    </div>
+                    <div class="info-box">
+                        <strong>Tablas involucradas:</strong>
+                        <ul class="tables-list">
+                            <li>encabezado_tracking (alias et)</li>
+                            <li>detalle_tracking (alias dt)</li>
+                            <li>soportes (alias s)</li>
+                            <li>firma_entregas (alias fe)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validación 4 -->
+            <section id="val4" class="validation-section">
+                <h2><span class="validation-number">4</span> La cantidad de piezas a facturar deben ser iguales a las piezas movilizadas señaladas por Herinco</h2>
+                
+                <div class="query-block">
+                    <h3>Consulta 1: Obtener RMT_SEPA (Stone)</h3>
+                    <div class="file-path">src/main/java/co/org/cohan/msalogistics/stone/repository/HzSepcaRepository.java</div>
+                    <div style="margin: 10px 0;">
+                        <span class="badge badge-native">Nativa</span>
+                        <span class="badge badge-stone">Stone (SQL Server)</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>Método:</strong> obtenerRmtSepaPorRmtCape()<br>
+                        <strong>Líneas:</strong> 31-35
+                    </div>
+                    <div class="code-block">
+<span class="annotation">@Query</span>(value = <span class="string">"SELECT TOP 1 RMT_SEPA " +
+        "FROM HZ_SEPCA (NOLOCK) " +
+        "WHERE RMT_CAPE = :rmtCape"</span>, 
+        nativeQuery = <span class="keyword">true</span>)
+<span class="keyword">String</span> obtenerRmtSepaPorRmtCape(<span class="annotation">@Param</span>(<span class="string">"rmtCape"</span>) <span class="keyword">String</span> rmtCape);
+                    </div>
+                </div>
+
+                <div class="query-block">
+                    <h3>Consulta 2: Obtener número de cajas (Stone)</h3>
+                    <div class="file-path">src/main/java/co/org/cohan/msalogistics/stone/repository/HzSepcaRepository.java</div>
+                    <div style="margin: 10px 0;">
+                        <span class="badge badge-native">Nativa</span>
+                        <span class="badge badge-stone">Stone (SQL Server)</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>Método:</strong> obtenerNumeroCajasPorRmtSepaYTipoPedido()<br>
+                        <strong>Líneas:</strong> 55-83
+                    </div>
+                    <div class="code-block">
+<span class="keyword">String</span> SQL_NUMERO_CAJAS = <span class="string">"""
+    SELECT MAX(COD_CAJA)
+    FROM (
+        SELECT S.COD_CAJA
+        FROM HD_SEPCA R WITH (NOLOCK)
+        JOIN HD_SEPCD S WITH (NOLOCK) ON R.RMT_SEPA = S.RMT_SEPA
+        WHERE R.RMT_SEPA = :rmtSepa AND R.TIP_PEDI = :tipPedi
+        UNION ALL
+        SELECT S.COD_CAJA
+        FROM HZ_SEPCA R WITH (NOLOCK)
+        JOIN HZ_SEPCD S WITH (NOLOCK) ON R.RMT_SEPA = S.RMT_SEPA
+        WHERE R.RMT_SEPA = :rmtSepa AND R.TIP_PEDI = :tipPedi
+    ) t
+    """</span>;
+
+<span class="annotation">@Query</span>(value = SQL_NUMERO_CAJAS, nativeQuery = <span class="keyword">true</span>)
+<span class="keyword">Integer</span> obtenerNumeroCajasPorRmtSepaYTipoPedido(<span class="annotation">@Param</span>(<span class="string">"rmtSepa"</span>) <span class="keyword">String</span> rmtSepa, <span class="annotation">@Param</span>(<span class="string">"tipPedi"</span>) <span class="keyword">String</span> tipPedi);
+                    </div>
+                    <div class="info-box">
+                        <strong>Tablas involucradas:</strong>
+                        <ul class="tables-list">
+                            <li>HD_SEPCA (alias R)</li>
+                            <li>HD_SEPCD (alias S)</li>
+                            <li>HZ_SEPCA (alias R)</li>
+                            <li>HZ_SEPCD (alias S)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validación 5 -->
+            <section id="val5" class="validation-section">
+                <h2><span class="validation-number">5</span> La tarifa debe ser la pactada en los contratos y su fecha de servicio debe coincidir con la vigencia de la misma</h2>
+                
+                <div class="no-query">
+                    <div class="no-query-icon">💾</div>
+                    <h3>No hay consulta SQL directa</h3>
+                    <p>Esta validación se realiza en memoria comparando los datos del CSV con las tarifas cargadas desde la tabla <code>tarifa_auditoria_transporte</code> (PostgreSQL) mediante JPA estándar.</p>
+                    <div style="margin-top: 20px;">
+                        <span class="badge badge-memory">Validación en Memoria</span>
+                        <span class="badge badge-postgres">PostgreSQL</span>
+                    </div>
+                    <div class="info-box" style="margin-top: 20px; text-align: left;">
+                        <strong>Lógica:</strong> Se encuentra en <code>ValidacionesGuiaService.validarTarifasPrefactura()</code><br><br>
+                        <strong>Tablas involucradas (vía JPA):</strong>
+                        <ul class="tables-list">
+                            <li>tarifa_auditoria_transporte</li>
+                            <li>transportadora</li>
+                            <li>ciudad</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validación 6 -->
+            <section id="val6" class="validation-section">
+                <h2><span class="validation-number">6</span> El valor asegurado debe ser igual al valor del documento o transacción de Herinco</h2>
+                
+                <div class="query-block">
+                    <h3>Consulta SQL</h3>
+                    <div class="file-path">src/main/java/co/org/cohan/msalogistics/stone/repository/HdGuitraRepository.java</div>
+                    <div style="margin: 10px 0;">
+                        <span class="badge badge-native">Nativa</span>
+                        <span class="badge badge-stone">Stone (SQL Server)</span>
+                        <span class="badge badge-herinco">HERINCO</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>Método:</strong> obtenerValorDeclaradoPorNumerosGuia()<br>
+                        <strong>Líneas:</strong> 61-115
+                    </div>
+                    <div class="code-block">
+<span class="annotation">@Query</span>(value = <span class="string">"SELECT " +
+        "    R.NUM_GUIA, " +
+        "    R.TIP_TRAN, " +
+        "    CASE " +
+        "        WHEN R.TIP_TRAN IN ('I','C') THEN 'COSTO_PROMEDIO' " +
+        "        WHEN R.TIP_TRAN = 'D' THEN 'PRECIO_COMERCIAL' " +
+        "    END AS TIPO_CALCULO, " +
+        "    SUM( " +
+        "        CASE " +
+        "            WHEN R.TIP_TRAN IN ('I','C') THEN " +
+        "                CONVERT(DECIMAL(20,0), Y.UNI_FACT * Z.COS_PROM) " +
+        "            WHEN R.TIP_TRAN = 'D' THEN " +
+        "                CONVERT(DECIMAL(20,0), G.VAL_PREC * G.CAN_ENTR) " +
+        "        END " +
+        "    ) AS VALOR_DECLARADO " +
+        "FROM HD_GUITRA R WITH (NOLOCK) " +
+        "LEFT JOIN HD_HIASP L WITH (NOLOCK) " +
+        "    ON R.TIP_TRAN IN ('I','C') " +
+        "   AND R.RMT_TRAN = L.RMT_CAPE " +
+        "   AND R.TIP_TRAN = L.TIP_PEDI " +
+        "LEFT JOIN PE_CAPED A WITH (NOLOCK) " +
+        "    ON L.RMT_CAPE = A.RMT_CAPE " +
+        "   AND A.COD_EMPR = 1 " +
+        "LEFT JOIN PE_CUPED Y WITH (NOLOCK) " +
+        "    ON A.COD_EMPR = Y.COD_EMPR " +
+        "   AND A.RMT_CAPE = Y.RMT_CAPE " +
+        "LEFT JOIN IN_SAMES Z WITH (NOLOCK) " +
+        "    ON R.TIP_TRAN IN ('I','C') " +
+        "   AND Z.COD_EMPR = Y.COD_EMPR " +
+        "   AND Z.COD_BODE = Y.COD_BODE " +
+        "   AND Z.COD_PROD = Y.COD_PROD " +
+        "   AND Z.ANO_ACUM = YEAR(A.FEC_TRAN) " +
+        "   AND Z.MES_ACUM = ( " +
+        "        SELECT MAX(Z2.MES_ACUM) " +
+        "        FROM IN_SAMES Z2 WITH (NOLOCK) " +
+        "        WHERE Z2.COD_EMPR = Y.COD_EMPR " +
+        "          AND Z2.COD_BODE = Y.COD_BODE " +
+        "          AND Z2.COD_PROD = Y.COD_PROD " +
+        "          AND Z2.ANO_ACUM = YEAR(A.FEC_TRAN) " +
+        "          AND Z2.MES_ACUM <= MONTH(A.FEC_TRAN) " +
+        "   ) " +
+        "LEFT JOIN HERINCO..DP_CAENT B WITH (NOLOCK) " +
+        "    ON R.TIP_TRAN = 'D' " +
+        "   AND R.NUM_DOCU = B.RMT_CAEN " +
+        "   AND B.ACT_ESTA <> 'B' " +
+        "LEFT JOIN HERINCO..DP_CUENT G WITH (NOLOCK) " +
+        "    ON R.TIP_TRAN = 'D' " +
+        "   AND B.RMT_CAEN = G.RMT_CAEN " +
+        "   AND G.ACT_ESTA <> 'B' " +
+        "WHERE R.NUM_GUIA IN :numerosGuia " +
+        "  AND R.EST_GUIA <> 'B' " +
+        "GROUP BY R.NUM_GUIA, R.TIP_TRAN " +
+        "ORDER BY R.NUM_GUIA"</span>, 
+        nativeQuery = <span class="keyword">true</span>)
+<span class="keyword">List</span>&lt;<span class="keyword">Object</span>[]&gt; obtenerValorDeclaradoPorNumerosGuia(<span class="annotation">@Param</span>(<span class="string">"numerosGuia"</span>) <span class="keyword">List</span>&lt;<span class="keyword">String</span>&gt; numerosGuia);
+                    </div>
+                    <div class="info-box">
+                        <strong>Tablas involucradas:</strong>
+                        <ul class="tables-list">
+                            <li>HD_GUITRA (alias R)</li>
+                            <li>HD_HIASP (alias L)</li>
+                            <li>PE_CAPED (alias A)</li>
+                            <li>PE_CUPED (alias Y)</li>
+                            <li>IN_SAMES (alias Z, Z2)</li>
+                            <li>HERINCO..DP_CAENT (alias B)</li>
+                            <li>HERINCO..DP_CUENT (alias G)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validación 7 -->
+            <section id="val7" class="validation-section">
+                <h2><span class="validation-number">7</span> La tasa de manejo debe ser igual a la pactada en el contrato por cada origen, servicio y destino</h2>
+                
+                <div class="no-query">
+                    <div class="no-query-icon">💾</div>
+                    <h3>No hay consulta SQL directa</h3>
+                    <p>Esta validación se realiza junto con la Validación 5 en <code>ValidacionesGuiaService.validarTarifasPrefactura()</code>. Compara el campo <code>tasaManejo</code> del CSV con el campo <code>costoManejo</code> de la tabla <code>tarifa_auditoria_transporte</code>.</p>
+                    <div style="margin-top: 20px;">
+                        <span class="badge badge-memory">Validación en Memoria</span>
+                        <span class="badge badge-postgres">PostgreSQL</span>
+                    </div>
+                    <div class="info-box" style="margin-top: 20px; text-align: left;">
+                        <strong>Lógica:</strong> Se encuentra en <code>ValidacionesGuiaService.validarTarifasPrefactura()</code><br><br>
+                        <strong>Tablas involucradas (vía JPA):</strong>
+                        <ul class="tables-list">
+                            <li>tarifa_auditoria_transporte</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validación 8 -->
+            <section id="val8" class="validation-section">
+                <h2><span class="validation-number">8</span> La fecha de servicio debe coincidir con la vigencia del contrato</h2>
+                
+                <div class="no-query">
+                    <div class="no-query-icon">💾</div>
+                    <h3>No hay consulta SQL directa</h3>
+                    <p>Esta validación se realiza junto con la Validación 5 en <code>ValidacionesGuiaService.validarTarifasPrefactura()</code>. Compara la fecha de servicio del CSV con los campos <code>vigenciaTarifaDesde</code> y <code>vigenciaTarifaHasta</code> de la tabla <code>tarifa_auditoria_transporte</code>.</p>
+                    <div style="margin-top: 20px;">
+                        <span class="badge badge-memory">Validación en Memoria</span>
+                        <span class="badge badge-postgres">PostgreSQL</span>
+                    </div>
+                    <div class="info-box" style="margin-top: 20px; text-align: left;">
+                        <strong>Lógica:</strong> Se encuentra en <code>ValidacionesGuiaService.validarTarifasPrefactura()</code><br><br>
+                        <strong>Tablas involucradas (vía JPA):</strong>
+                        <ul class="tables-list">
+                            <li>tarifa_auditoria_transporte</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resumen -->
+            <section id="resumen" class="validation-section">
+                <h2>📋 Resumen de Archivos por Validación</h2>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Validación</th>
+                            <th>Archivos con Consultas SQL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Servicio no facturado previamente</strong></td>
+                            <td><code>PrefacturaAuditoriaTransporteRepository.java</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Asignación transportadora</strong></td>
+                            <td><code>SoporteAuditoriaTransporteRepository.java</code><br><code>HdHiaspRepository.java</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Soporte de entrega</strong></td>
+                            <td><code>SoporteAuditoriaTransporteRepository.java</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Cantidad de piezas</strong></td>
+                            <td><code>SoporteAuditoriaTransporteRepository.java</code><br><code>HzSepcaRepository.java</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Tarifa pactada</strong></td>
+                            <td>Sin consulta SQL directa (validación en memoria)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>6. Valor declarado</strong></td>
+                            <td><code>HdGuitraRepository.java</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>7. Tasa de manejo</strong></td>
+                            <td>Sin consulta SQL directa (validación en memoria)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>8. Vigencia contrato</strong></td>
+                            <td>Sin consulta SQL directa (validación en memoria)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Repositorios -->
+            <section id="repositorios" class="validation-section">
+                <h2>📁 Ubicación de Repositorios</h2>
+                
+                <div class="repo-list">
+                    <h3><span class="badge badge-postgres">PostgreSQL</span></h3>
+                    <ul>
+                        <li>src/main/java/co/org/cohan/msalogistics/postgres/repository/PrefacturaAuditoriaTransporteRepository.java</li>
+                        <li>src/main/java/co/org/cohan/msalogistics/postgres/repository/SoporteAuditoriaTransporteRepository.java</li>
+                    </ul>
+                </div>
+
+                <div class="repo-list">
+                    <h3><span class="badge badge-stone">Stone (SQL Server)</span></h3>
+                    <ul>
+                        <li>src/main/java/co/org/cohan/msalogistics/stone/repository/HdHiaspRepository.java</li>
+                        <li>src/main/java/co/org/cohan/msalogistics/stone/repository/HzSepcaRepository.java</li>
+                        <li>src/main/java/co/org/cohan/msalogistics/stone/repository/HdGuitraRepository.java</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Notas -->
+            <section id="notas" class="notes-section">
+                <h2>⚠️ Notas Importantes</h2>
+                <ol>
+                    <li><strong>Validaciones 5, 7 y 8</strong> no tienen consultas SQL directas porque se realizan en memoria comparando datos del CSV con entidades JPA cargadas previamente.</li>
+                    <li><strong>Validación 2</strong> tiene lógica especial: para tipo de transacción 'D' (Domicilio), se usa NIT fijo <code>900702986</code> sin consultar Stone.</li>
+                    <li><strong>Validación 6</strong> consulta tanto la base de datos Stone como HERINCO (usando sintaxis <code>HERINCO..DP_CAENT</code>).</li>
+                    <li>Todas las consultas nativas de Stone usan sintaxis SQL Server (<code>WITH (NOLOCK)</code>, <code>TOP 1</code>, etc.).</li>
+                    <li>Todas las consultas nativas de PostgreSQL usan sintaxis PostgreSQL estándar.</li>
+                </ol>
+            </section>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top" title="Volver arriba">↑</a>
+
+    <script>
+        // Smooth scroll para los enlaces del índice
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mostrar/ocultar botón "volver arriba"
+        const backToTop = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
